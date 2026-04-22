@@ -1,6 +1,7 @@
 node_modules/
 .next/
 dist/
+!apps/snippet/dist/
 .env
 .env.local
 .env.*.local
