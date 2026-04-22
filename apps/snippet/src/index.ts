@@ -2,7 +2,7 @@ import { matchesRules, type UserProps } from "./engine";
 import { initTracker, track } from "./tracker";
 import { renderStep, cleanup } from "./renderer";
 
-const DEFAULT_API_URL = "https://YOUR_PROJECT.supabase.co/functions/v1";
+const DEFAULT_API_URL = "https://zesemjcbilrvtgucrazd.supabase.co/functions/v1";
 
 interface InitOptions {
   apiUrl?: string;
