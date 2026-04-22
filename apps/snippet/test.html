@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowLift snippet test</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    #create-flow-btn { background: #4f6ef7; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; }
+    .controls { margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap; }
+    button { padding: 8px 16px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 13px; background: white; }
+    button:hover { background: #f5f5f5; }
+    pre { background: #f5f5f5; padding: 12px; border-radius: 8px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <h1>FlowLift test page</h1>
+  <p>This page simulates a customer's app. Open the browser console to see logs.</p>
+  <p>URL: <code id="url"></code></p>
+
+  <button id="create-flow-btn">Create your first flow</button>
+
+  <div class="controls">
+    <button onclick="triggerFree()">Identify as free user</button>
+    <button onclick="triggerPro()">Identify as pro user</button>
+    <button onclick="FlowLift.reset(); location.reload()">Reset (clear localStorage)</button>
+  </div>
+
+  <pre id="log">Waiting for FlowLift.identify()...</pre>
+
+  <!-- In production: src="https://cdn.flowlift.io/flowlift.min.js" -->
+  <script src="./dist/flowlift.min.js"></script>
+  <script>
+    document.getElementById('url').textContent = window.location.href;
+
+    // Replace YOUR_API_KEY with a real proj_ key, and set apiUrl to your local Supabase
+    FlowLift.init('proj_test_key_replace_me', {
+      apiUrl: 'http://localhost:54321/functions/v1'
+    });
+
+    function log(msg) {
+      document.getElementById('log').textContent = msg;
+    }
+
+    function triggerFree() {
+      log('Identifying as free user with session_count=1...');
+      FlowLift.identify({ id: 'user_123', plan: 'free', session_count: 1 });
+    }
+
+    function triggerPro() {
+      log('Identifying as pro user with session_count=10...');
+      FlowLift.identify({ id: 'user_456', plan: 'pro', session_count: 10 });
+    }
+  </script>
+</body>
+</html>

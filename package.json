@@ -1,0 +1,13 @@
+{
+  "name": "flowlift",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter dashboard dev",
+    "build:snippet": "pnpm --filter snippet build",
+    "db:push": "supabase db push",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
