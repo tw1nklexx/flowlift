@@ -6,3 +6,4 @@ dist/
 .env.*.local
 *.min.js.map
 .supabase/
+supabase/.temp/
