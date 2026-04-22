@@ -2,8 +2,6 @@ import { matchesRules, type UserProps } from "./engine";
 import { initTracker, track } from "./tracker";
 import { renderStep, cleanup } from "./renderer";
 
-const DEFAULT_API_URL = "https://zesemjcbilrvtgucrazd.supabase.co/functions/v1";
-
 interface InitOptions {
   apiUrl?: string;
 }
@@ -16,7 +14,7 @@ interface FlowData {
 }
 
 let _apiKey = "";
-let _apiUrl = DEFAULT_API_URL;
+let _apiUrl = "https://zesemjcbilrvtgucrazd.supabase.co/functions/v1";
 let _userProps: UserProps | null = null;
 let _sessionId = "";
 let _initialized = false;
@@ -81,7 +79,7 @@ export function init(apiKey: string, options: InitOptions = {}): void {
   if (_initialized) return;
   _initialized = true;
   _apiKey = apiKey;
-  _apiUrl = options.apiUrl ?? DEFAULT_API_URL;
+  _apiUrl = options.apiUrl ?? "https://zesemjcbilrvtgucrazd.supabase.co/functions/v1";
   _sessionId = getSessionId();
   initTracker(apiKey, _apiUrl);
 
