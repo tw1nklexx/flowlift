@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Flow, Step, StepType, TargetingRules, Condition, ConditionType } from "@/types";
+import PreviewModal from "@/components/PreviewModal";
 
 interface Props {
   projectId: string;
@@ -44,6 +45,7 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState<"content" | "design" | "targeting">("content");
+  const [previewing, setPreviewing] = useState(false);
 
   const selectedStep = selectedIdx !== null ? steps[selectedIdx] : null;
 
@@ -155,6 +157,13 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
             Save draft
           </button>
           <button
+            onClick={() => setPreviewing(true)}
+            disabled={steps.length === 0}
+            className="px-4 py-1.5 text-sm border border-brand-300 rounded-lg text-brand-600 hover:bg-brand-50 disabled:opacity-50 transition-colors flex items-center gap-1.5"
+          >
+            <span className="text-[10px]">▶</span> Preview
+          </button>
+          <button
             onClick={() => save(true)}
             disabled={saving || deleting || steps.length === 0}
             className="px-4 py-1.5 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
@@ -163,6 +172,14 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
           </button>
         </div>
       </div>
+
+      {previewing && (
+        <PreviewModal
+          steps={steps}
+          flowName={name}
+          onClose={() => setPreviewing(false)}
+        />
+      )}
 
       {/* 3-column body */}
       <div className="flex flex-1 overflow-hidden">
