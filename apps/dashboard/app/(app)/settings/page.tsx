@@ -46,7 +46,8 @@ export default async function SettingsPage() {
 }
 
 function InstallSnippet({ apiKey }: { apiKey: string }) {
-  const code = `<script src="https://cdn.flowlift.io/flowlift.min.js"></script>
+  const snippetUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/snippet`;
+  const code = `<script src="${snippetUrl}"></script>
 <script>
   FlowLift.init("${apiKey}");
   FlowLift.identify({
