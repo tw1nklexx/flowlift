@@ -18,13 +18,21 @@ function Nav() {
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <span className="text-xl font-bold text-[#4f6ef7]">FlowLift</span>
-        <Link
-          href="/login"
-          className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-        >
-          Sign in
-        </Link>
+        <Link href="/" className="text-xl font-bold text-[#4f6ef7]">FlowLift</Link>
+        <nav className="flex items-center gap-6">
+          <Link
+            href="/docs"
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            Docs
+          </Link>
+          <Link
+            href="/login"
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            Sign in
+          </Link>
+        </nav>
       </div>
     </header>
   );
@@ -298,6 +306,9 @@ function Footer() {
           <a href="#pricing" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
             Pricing
           </a>
+          <Link href="/docs" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
+            Docs
+          </Link>
           <Link href="/login" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
             Sign in
           </Link>
