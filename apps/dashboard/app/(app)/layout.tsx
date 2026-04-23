@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./LogoutButton";
+import GettingStartedLink from "./GettingStartedLink";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
@@ -15,6 +16,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <span className="text-lg font-bold text-brand-600">FlowLift</span>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
+          <GettingStartedLink />
           <NavItem href="/flows" label="Flows" icon="⚡" />
           <NavItem href="/analytics" label="Analytics" icon="📊" />
           <NavItem href="/settings" label="Settings" icon="⚙️" />
