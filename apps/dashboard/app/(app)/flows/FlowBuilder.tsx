@@ -43,7 +43,7 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
   );
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [activeTab, setActiveTab] = useState<"step" | "targeting">("step");
+  const [activeTab, setActiveTab] = useState<"content" | "design" | "targeting">("content");
 
   const selectedStep = selectedIdx !== null ? steps[selectedIdx] : null;
 
@@ -52,7 +52,7 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
     const newSteps = [...steps, newStep];
     setSteps(newSteps);
     setSelectedIdx(newSteps.length - 1);
-    setActiveTab("step");
+    setActiveTab("content");
   }
 
   function removeStep(idx: number) {
@@ -233,40 +233,45 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
         {/* Right: Properties */}
         <div className="w-72 bg-white border-l border-gray-200 flex flex-col">
           <div className="flex border-b border-gray-200">
-            <button
-              onClick={() => setActiveTab("step")}
-              className={`flex-1 py-3 text-xs font-medium transition-colors ${
-                activeTab === "step"
-                  ? "text-brand-600 border-b-2 border-brand-600"
-                  : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              Step properties
-            </button>
-            <button
-              onClick={() => setActiveTab("targeting")}
-              className={`flex-1 py-3 text-xs font-medium transition-colors ${
-                activeTab === "targeting"
-                  ? "text-brand-600 border-b-2 border-brand-600"
-                  : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              Targeting
-              {targeting.conditions.length > 0 && (
-                <span className="ml-1 bg-brand-100 text-brand-600 text-xs px-1.5 py-0.5 rounded-full">
-                  {targeting.conditions.length}
-                </span>
-              )}
-            </button>
+            {(["Content", "Design", "Targeting"] as const).map((label) => {
+              const tab = label.toLowerCase() as "content" | "design" | "targeting";
+              return (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`flex-1 py-3 text-xs font-medium transition-colors ${
+                    activeTab === tab
+                      ? "text-brand-600 border-b-2 border-brand-600"
+                      : "text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  {label}
+                  {tab === "targeting" && targeting.conditions.length > 0 && (
+                    <span className="ml-1 bg-brand-100 text-brand-600 text-xs px-1.5 py-0.5 rounded-full">
+                      {targeting.conditions.length}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
           <div className="flex-1 overflow-y-auto px-4 py-4">
-            {activeTab === "step" && selectedStep !== null && selectedIdx !== null ? (
-              <StepPropertiesPanel
+            {activeTab === "content" && selectedStep !== null && selectedIdx !== null ? (
+              <ContentPanel
                 step={selectedStep}
                 onChange={(patch) => updateStep(selectedIdx, patch)}
               />
-            ) : activeTab === "step" ? (
+            ) : activeTab === "content" ? (
+              <p className="text-sm text-gray-400 text-center mt-8">
+                Select a step on the left
+              </p>
+            ) : activeTab === "design" && selectedStep !== null && selectedIdx !== null ? (
+              <DesignPanel
+                step={selectedStep}
+                onChange={(patch) => updateStep(selectedIdx, patch)}
+              />
+            ) : activeTab === "design" ? (
               <p className="text-sm text-gray-400 text-center mt-8">
                 Select a step on the left
               </p>
@@ -307,26 +312,33 @@ function StepTypeIcon({ type }: { type: StepType }) {
 }
 
 function StepPreview({ step }: { step: Step }) {
-  const primary   = step.primaryColor  ?? "#4f6ef7";
-  const textColor = step.textColor     ?? "#4b5563";
-  const radius    = step.borderRadius  ?? 12;
-  const fontSize  = step.fontSize      ?? 15;
+  const btnColor       = step.btnColor        ?? "#4f6ef7";
+  const btnTextColor   = step.btnTextColor    ?? "#ffffff";
+  const btnRadius      = step.btnBorderRadius ?? 8;
+  const bodyFontSize   = step.bodyFontSize    ?? 15;
+  const containerRadius = step.containerRadius ?? 16;
+  const intensity      = step.shadowIntensity ?? 50;
+  const shadow         = `0 ${intensity * 0.2}px ${intensity * 0.6}px rgba(0,0,0,${intensity / 250})`;
 
   if (step.type === "modal") {
-    const overlayBg = hexToRgba(step.overlayColor ?? "#000000", step.overlayOpacity ?? 45);
+    const titleColor   = step.titleColor    ?? "#111111";
+    const titleSize    = step.titleFontSize ?? 20;
+    const overlayBg    = hexToRgba(step.overlayColor ?? "#000000", step.overlayOpacity ?? 45);
     return (
       <div
-        className="w-full max-w-lg rounded-2xl p-6 flex items-center justify-center shadow-2xl"
+        className="w-full max-w-lg rounded-2xl p-6 flex items-center justify-center"
         style={{ background: overlayBg }}
       >
-        <div className="bg-white w-full p-8 shadow-xl" style={{ borderRadius: radius }}>
+        <div className="bg-white w-full p-8" style={{ borderRadius: containerRadius, boxShadow: shadow }}>
           {step.title && (
-            <h2 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h2>
+            <h2 className="font-bold mb-3" style={{ color: titleColor, fontSize: titleSize }}>
+              {step.title}
+            </h2>
           )}
-          <p className="mb-6" style={{ color: textColor, fontSize }}>{step.body}</p>
+          <p className="mb-6" style={{ color: "#555", fontSize: bodyFontSize }}>{step.body}</p>
           <button
-            className="text-white px-5 py-2 text-sm font-semibold"
-            style={{ backgroundColor: primary, borderRadius: Math.max(4, radius - 4) }}
+            className="px-5 py-2 text-sm font-semibold"
+            style={{ backgroundColor: btnColor, color: btnTextColor, borderRadius: btnRadius }}
           >
             {step.cta_label}
           </button>
@@ -336,20 +348,21 @@ function StepPreview({ step }: { step: Step }) {
   }
 
   if (step.type === "banner") {
-    const bannerBg = step.bgColor ?? "#4f6ef7";
+    const bannerBg    = step.bgColor      ?? "#4f6ef7";
+    const bannerPad   = step.bannerPadding ?? 12;
     return (
       <div className="w-full max-w-2xl flex flex-col gap-1">
         {step.position === "bottom" && (
           <p className="text-xs text-gray-400 text-center mb-1">↓ Anchored to bottom</p>
         )}
         <div
-          className="flex items-center justify-between px-6 py-4 shadow-lg"
-          style={{ backgroundColor: bannerBg, borderRadius: radius }}
+          className="flex items-center justify-between shadow-lg"
+          style={{ backgroundColor: bannerBg, borderRadius: containerRadius, padding: `${bannerPad}px 24px` }}
         >
-          <p className="text-white flex-1" style={{ fontSize }}>{step.body}</p>
+          <p style={{ color: "#ffffff", flex: 1, fontSize: bodyFontSize }}>{step.body}</p>
           <button
-            className="ml-6 bg-white font-semibold px-4 py-1.5 text-xs whitespace-nowrap"
-            style={{ color: bannerBg, borderRadius: Math.max(4, radius - 4) }}
+            className="ml-6 font-semibold text-xs whitespace-nowrap px-4 py-1.5"
+            style={{ color: bannerBg, backgroundColor: "#fff", borderRadius: btnRadius }}
           >
             {step.cta_label}
           </button>
@@ -371,15 +384,15 @@ function StepPreview({ step }: { step: Step }) {
         </p>
       )}
       <div
-        className="text-white px-5 py-4 max-w-xs shadow-xl"
-        style={{ backgroundColor: tooltipBg, borderRadius: radius }}
+        className="text-white px-5 py-4 max-w-xs"
+        style={{ backgroundColor: tooltipBg, borderRadius: containerRadius, boxShadow: shadow }}
       >
-        <p className="mb-3" style={{ color: textColor === "#4b5563" ? "#e5e7eb" : textColor, fontSize }}>
+        <p className="mb-3" style={{ color: "#e5e7eb", fontSize: bodyFontSize }}>
           {step.body}
         </p>
         <button
-          className="text-white px-3 py-1 text-xs font-semibold"
-          style={{ backgroundColor: primary, borderRadius: Math.max(4, radius - 4) }}
+          className="px-3 py-1 text-xs font-semibold"
+          style={{ backgroundColor: btnColor, color: btnTextColor, borderRadius: btnRadius }}
         >
           {step.cta_label}
         </button>
@@ -389,7 +402,7 @@ function StepPreview({ step }: { step: Step }) {
   );
 }
 
-function StepPropertiesPanel({
+function ContentPanel({
   step,
   onChange,
 }: {
@@ -398,7 +411,6 @@ function StepPropertiesPanel({
 }) {
   return (
     <div className="space-y-4">
-      {/* Content */}
       <div>
         <label className="block text-xs font-medium text-gray-500 mb-1">Type</label>
         <div className="text-sm text-gray-700 capitalize bg-gray-50 px-3 py-2 rounded-lg">
@@ -456,78 +468,158 @@ function StepPropertiesPanel({
           <option value="complete">Complete flow</option>
         </select>
       </Field>
+    </div>
+  );
+}
 
-      {/* Design */}
-      <div className="border-t border-gray-100 pt-4">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
-          Design
-        </p>
-        <div className="space-y-3">
-          <ColorField
-            label="Button color"
-            value={step.primaryColor ?? "#4f6ef7"}
-            onChange={(v) => onChange({ primaryColor: v })}
-          />
-          <ColorField
-            label="Text color"
-            value={step.textColor ?? "#4b5563"}
-            onChange={(v) => onChange({ textColor: v })}
-          />
-          <SliderField
-            label="Border radius"
-            value={step.borderRadius ?? 12}
-            min={0} max={24} unit="px"
-            onChange={(v) => onChange({ borderRadius: v })}
-          />
-          <Field label="Font size">
-            <select
-              value={step.fontSize ?? 15}
-              onChange={(e) => onChange({ fontSize: Number(e.target.value) })}
-              className={inputCls}
-            >
-              <option value={13}>Small (13px)</option>
-              <option value={15}>Medium (15px)</option>
-              <option value={17}>Large (17px)</option>
-            </select>
-          </Field>
+function Collapsible({
+  title,
+  children,
+  defaultOpen = true,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="border border-gray-100 rounded-lg overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wide hover:bg-gray-100 transition-colors"
+      >
+        {title}
+        <span className="text-gray-400 text-xs">{open ? "▲" : "▼"}</span>
+      </button>
+      {open && <div className="px-3 py-3 space-y-3">{children}</div>}
+    </div>
+  );
+}
 
-          {step.type === "modal" && (
-            <>
-              <ColorField
-                label="Overlay color"
-                value={step.overlayColor ?? "#000000"}
-                onChange={(v) => onChange({ overlayColor: v })}
-              />
-              <SliderField
-                label="Overlay opacity"
-                value={step.overlayOpacity ?? 45}
-                min={0} max={100} unit="%"
-                onChange={(v) => onChange({ overlayOpacity: v })}
-              />
-            </>
-          )}
+function DesignPanel({
+  step,
+  onChange,
+}: {
+  step: Step;
+  onChange: (patch: Partial<Step>) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      <Collapsible title="Typography">
+        {step.type === "modal" && (
+          <>
+            <ColorField
+              label="Title color"
+              value={step.titleColor ?? "#111111"}
+              onChange={(v) => onChange({ titleColor: v })}
+            />
+            <SliderField
+              label="Title size"
+              value={step.titleFontSize ?? 20}
+              min={16} max={40} unit="px"
+              onChange={(v) => onChange({ titleFontSize: v })}
+            />
+          </>
+        )}
+        <SliderField
+          label="Body size"
+          value={step.bodyFontSize ?? 15}
+          min={11} max={24} unit="px"
+          onChange={(v) => onChange({ bodyFontSize: v })}
+        />
+      </Collapsible>
 
-          {step.type === "banner" && (
-            <>
-              <ColorField
-                label="Background color"
-                value={step.bgColor ?? "#4f6ef7"}
-                onChange={(v) => onChange({ bgColor: v })}
-              />
-              <Field label="Position">
-                <select
-                  value={step.position ?? "top"}
-                  onChange={(e) => onChange({ position: e.target.value as "top" | "bottom" })}
-                  className={inputCls}
-                >
-                  <option value="top">Top</option>
-                  <option value="bottom">Bottom</option>
-                </select>
-              </Field>
-            </>
-          )}
-        </div>
-      </div>
+      <Collapsible title="Button">
+        <ColorField
+          label="Button color"
+          value={step.btnColor ?? "#4f6ef7"}
+          onChange={(v) => onChange({ btnColor: v })}
+        />
+        <ColorField
+          label="Text color"
+          value={step.btnTextColor ?? "#ffffff"}
+          onChange={(v) => onChange({ btnTextColor: v })}
+        />
+        <SliderField
+          label="Corner radius"
+          value={step.btnBorderRadius ?? 8}
+          min={0} max={24} unit="px"
+          onChange={(v) => onChange({ btnBorderRadius: v })}
+        />
+      </Collapsible>
+
+      <Collapsible title="Container">
+        <SliderField
+          label="Corner radius"
+          value={step.containerRadius ?? 16}
+          min={0} max={24} unit="px"
+          onChange={(v) => onChange({ containerRadius: v })}
+        />
+        <SliderField
+          label="Shadow"
+          value={step.shadowIntensity ?? 50}
+          min={0} max={100} unit=""
+          onChange={(v) => onChange({ shadowIntensity: v })}
+        />
+        <Field label="Animation">
+          <select
+            value={step.animation ?? "fade"}
+            onChange={(e) =>
+              onChange({ animation: e.target.value as "fade" | "slide" | "bounce" | "none" })
+            }
+            className={inputCls}
+          >
+            <option value="none">None</option>
+            <option value="fade">Fade</option>
+            <option value="slide">Slide up</option>
+            <option value="bounce">Bounce</option>
+          </select>
+        </Field>
+
+        {step.type === "modal" && (
+          <>
+            <ColorField
+              label="Overlay color"
+              value={step.overlayColor ?? "#000000"}
+              onChange={(v) => onChange({ overlayColor: v })}
+            />
+            <SliderField
+              label="Overlay opacity"
+              value={step.overlayOpacity ?? 45}
+              min={0} max={100} unit="%"
+              onChange={(v) => onChange({ overlayOpacity: v })}
+            />
+          </>
+        )}
+
+        {step.type === "banner" && (
+          <>
+            <ColorField
+              label="Background"
+              value={step.bgColor ?? "#4f6ef7"}
+              onChange={(v) => onChange({ bgColor: v })}
+            />
+            <SliderField
+              label="Padding"
+              value={step.bannerPadding ?? 12}
+              min={8} max={40} unit="px"
+              onChange={(v) => onChange({ bannerPadding: v })}
+            />
+            <Field label="Position">
+              <select
+                value={step.position ?? "top"}
+                onChange={(e) =>
+                  onChange({ position: e.target.value as "top" | "bottom" })
+                }
+                className={inputCls}
+              >
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+              </select>
+            </Field>
+          </>
+        )}
+      </Collapsible>
     </div>
   );
 }

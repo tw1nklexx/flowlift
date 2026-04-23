@@ -7,14 +7,24 @@ export interface Step {
   cta_label: string;
   cta_action: "next" | "complete";
   target_selector?: string | null;
-  // Design
-  primaryColor?: string;
-  textColor?: string;
-  borderRadius?: number;
-  fontSize?: number;
+  // Typography
+  titleColor?: string;
+  titleFontSize?: number;
+  bodyFontSize?: number;
+  // Button
+  btnColor?: string;
+  btnTextColor?: string;
+  btnBorderRadius?: number;
+  // Container
+  containerRadius?: number;
+  shadowIntensity?: number;
+  animation?: "fade" | "slide" | "bounce" | "none";
+  // Modal only
   overlayColor?: string;
   overlayOpacity?: number;
+  // Banner only
   bgColor?: string;
+  bannerPadding?: number;
   position?: "top" | "bottom";
 }
 
@@ -24,6 +34,15 @@ function hexToRgba(hex: string, opacity: number): string {
   const g = parseInt(h.slice(2, 4), 16);
   const b = parseInt(h.slice(4, 6), 16);
   return `rgba(${r},${g},${b},${opacity / 100})`;
+}
+
+function makeShadow(intensity: number): string {
+  return `0 ${intensity * 0.2}px ${intensity * 0.6}px rgba(0,0,0,${intensity / 250})`;
+}
+
+function animClass(anim?: "fade" | "slide" | "bounce" | "none"): string {
+  if (!anim || anim === "none") return "";
+  return `fl-anim-${anim}`;
 }
 
 interface RenderContext {
@@ -44,7 +63,7 @@ const STYLES = `
   .fl-modal-title { font-size: 20px; font-weight: 700; color: #111; margin: 0 0 12px; }
   .fl-modal-body { font-size: 15px; color: #555; line-height: 1.6; margin: 0 0 24px; }
   .fl-btn { display: inline-flex; align-items: center; padding: 10px 20px; border-radius: 8px; background: #4f6ef7; color: #fff; font-size: 14px; font-weight: 600; border: none; cursor: pointer; }
-  .fl-btn:hover { background: #3b5af5; }
+  .fl-btn:hover { opacity: 0.88; }
   .fl-dismiss { float: right; background: none; border: none; cursor: pointer; color: #aaa; font-size: 18px; line-height: 1; padding: 0; margin: -4px -4px 0 0; }
   .fl-dismiss:hover { color: #555; }
   .fl-banner { position: fixed; top: 0; left: 0; right: 0; background: #4f6ef7; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; z-index: 2147483647; }
@@ -55,6 +74,12 @@ const STYLES = `
   .fl-tooltip-body { font-size: 14px; line-height: 1.5; margin: 0 0 12px; }
   .fl-tooltip-arrow { position: absolute; width: 10px; height: 10px; background: #1a1a2e; transform: rotate(45deg); bottom: -5px; left: 16px; }
   .fl-progress { font-size: 12px; color: #aaa; margin-top: 12px; }
+  @keyframes fl-fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fl-slide { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fl-bounce { 0% { opacity: 0; transform: scale(0.8); } 70% { transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+  .fl-anim-fade { animation: fl-fade 300ms ease forwards; }
+  .fl-anim-slide { animation: fl-slide 300ms ease forwards; }
+  .fl-anim-bounce { animation: fl-bounce 400ms ease forwards; }
 `;
 
 function injectStyles(): void {
@@ -71,7 +96,7 @@ function makeEl<K extends keyof HTMLElementTagNameMap>(
   extra?: Partial<HTMLElementTagNameMap[K]>,
 ): HTMLElementTagNameMap[K] {
   const el = document.createElement(tag);
-  el.className = `fl-reset ${cls}`;
+  el.className = `fl-reset ${cls}`.trimEnd();
   if (extra) Object.assign(el, extra);
   return el;
 }
@@ -127,17 +152,23 @@ function renderModal(
   idx: number,
   total: number,
 ): void {
-  const primary   = step.primaryColor  ?? "#4f6ef7";
-  const textColor = step.textColor     ?? "#555";
-  const radius    = step.borderRadius  ?? 16;
-  const fontSize  = step.fontSize      ?? 15;
-  const overlayBg = hexToRgba(step.overlayColor ?? "#000000", step.overlayOpacity ?? 45);
+  const btnColor   = step.btnColor        ?? "#4f6ef7";
+  const btnText    = step.btnTextColor    ?? "#ffffff";
+  const btnRadius  = step.btnBorderRadius ?? 8;
+  const titleColor = step.titleColor      ?? "#111111";
+  const titleSize  = step.titleFontSize   ?? 20;
+  const bodySize   = step.bodyFontSize    ?? 15;
+  const radius     = step.containerRadius ?? 16;
+  const shadow     = makeShadow(step.shadowIntensity ?? 50);
+  const overlayBg  = hexToRgba(step.overlayColor ?? "#000000", step.overlayOpacity ?? 45);
+  const anim       = animClass(step.animation ?? "fade");
 
   const ov = makeEl("div", "fl-overlay");
   ov.style.background = overlayBg;
 
-  const box = makeEl("div", "fl-modal");
+  const box = makeEl("div", `fl-modal ${anim}`);
   box.style.borderRadius = `${radius}px`;
+  box.style.boxShadow = shadow;
 
   const dismiss = makeEl("button", "fl-dismiss", { textContent: "✕" });
   dismiss.onclick = onDismiss;
@@ -145,17 +176,19 @@ function renderModal(
 
   if (step.title) {
     const title = makeEl("p", "fl-modal-title", { textContent: step.title });
+    title.style.color = titleColor;
+    title.style.fontSize = `${titleSize}px`;
     box.appendChild(title);
   }
 
   const body = makeEl("p", "fl-modal-body", { textContent: step.body });
-  body.style.color = textColor;
-  body.style.fontSize = `${fontSize}px`;
+  body.style.fontSize = `${bodySize}px`;
   box.appendChild(body);
 
   const btn = makeEl("button", "fl-btn", { textContent: step.cta_label });
-  btn.style.backgroundColor = primary;
-  btn.style.borderRadius = `${Math.max(4, radius - 4)}px`;
+  btn.style.backgroundColor = btnColor;
+  btn.style.color = btnText;
+  btn.style.borderRadius = `${btnRadius}px`;
   btn.onclick = onNext;
   box.appendChild(btn);
 
@@ -171,26 +204,27 @@ function renderModal(
 }
 
 function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): void {
-  const bgColor   = step.bgColor      ?? "#4f6ef7";
-  const fontSize  = step.fontSize     ?? 14;
-  const radius    = step.borderRadius ?? 0;
+  const bgColor   = step.bgColor        ?? "#4f6ef7";
+  const bodySize  = step.bodyFontSize   ?? 14;
+  const padding   = step.bannerPadding  ?? 12;
+  const btnRadius = step.btnBorderRadius ?? 6;
+  const anim      = animClass(step.animation ?? "slide");
 
-  const banner = makeEl("div", "fl-banner");
+  const banner = makeEl("div", `fl-banner ${anim}`);
   banner.style.backgroundColor = bgColor;
-  banner.style.borderRadius = `${radius}px`;
-  // position: top (default) or bottom
+  banner.style.padding = `${padding}px 20px`;
   if (step.position === "bottom") {
     banner.style.top = "auto";
     banner.style.bottom = "0";
   }
 
   const body = makeEl("span", "fl-banner-body", { textContent: step.body });
-  body.style.fontSize = `${fontSize}px`;
+  body.style.fontSize = `${bodySize}px`;
   banner.appendChild(body);
 
   const btn = makeEl("button", "fl-banner-btn", { textContent: step.cta_label });
   btn.style.color = bgColor;
-  btn.style.borderRadius = `${Math.max(4, radius - 2)}px`;
+  btn.style.borderRadius = `${btnRadius}px`;
   btn.onclick = onNext;
   banner.appendChild(btn);
 
@@ -203,10 +237,13 @@ function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): vo
 }
 
 function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): void {
-  const primary   = step.primaryColor ?? "#4f6ef7";
-  const textColor = step.textColor    ?? "#e5e7eb";
-  const radius    = step.borderRadius ?? 10;
-  const fontSize  = step.fontSize     ?? 14;
+  const btnColor  = step.btnColor        ?? "#4f6ef7";
+  const btnText   = step.btnTextColor    ?? "#ffffff";
+  const btnRadius = step.btnBorderRadius ?? 8;
+  const bodySize  = step.bodyFontSize    ?? 14;
+  const radius    = step.containerRadius ?? 10;
+  const shadow    = makeShadow(step.shadowIntensity ?? 50);
+  const anim      = animClass(step.animation ?? "fade");
   const tooltipBg = "#1a1a2e";
 
   let anchor: Element | null = null;
@@ -214,16 +251,16 @@ function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): v
     anchor = document.querySelector(step.target_selector);
   }
 
-  const tooltip = makeEl("div", "fl-tooltip");
+  const tooltip = makeEl("div", `fl-tooltip ${anim}`);
   tooltip.style.borderRadius = `${radius}px`;
+  tooltip.style.boxShadow = shadow;
 
   const body = makeEl("p", "fl-tooltip-body", { textContent: step.body });
-  body.style.color = textColor;
-  body.style.fontSize = `${fontSize}px`;
+  body.style.fontSize = `${bodySize}px`;
   tooltip.appendChild(body);
 
   const btn = makeEl("button", "fl-btn", { textContent: step.cta_label });
-  btn.style.cssText = `font-size:13px;padding:6px 14px;background:${primary};border-radius:${Math.max(4, radius - 4)}px;`;
+  btn.style.cssText = `font-size:13px;padding:6px 14px;background:${btnColor};color:${btnText};border-radius:${btnRadius}px;`;
   btn.onclick = onNext;
   tooltip.appendChild(btn);
 

@@ -8,15 +8,25 @@ export interface Step {
   cta_label: string;
   cta_action: CtaAction;
   target_selector?: string | null;
-  // Design
-  primaryColor?: string;    // button background, default #4f6ef7
-  textColor?: string;       // body text color
-  borderRadius?: number;    // 0-24 px
-  fontSize?: number;        // 13 | 15 | 17
-  overlayColor?: string;    // modal only — overlay bg hex
-  overlayOpacity?: number;  // modal only — 0-100
-  bgColor?: string;         // banner only — banner background
-  position?: "top" | "bottom"; // banner only
+  // Typography
+  titleColor?: string;        // modal only, default #111111
+  titleFontSize?: number;     // modal only, 16-40, default 20
+  bodyFontSize?: number;      // 11-24, default 15
+  // Button
+  btnColor?: string;          // default #4f6ef7
+  btnTextColor?: string;      // default #ffffff
+  btnBorderRadius?: number;   // 0-24, default 8
+  // Container
+  containerRadius?: number;   // 0-24, default 16
+  shadowIntensity?: number;   // 0-100, default 50
+  animation?: "fade" | "slide" | "bounce" | "none";
+  // Modal only
+  overlayColor?: string;
+  overlayOpacity?: number;
+  // Banner only
+  bgColor?: string;
+  bannerPadding?: number;     // 8-40, default 12
+  position?: "top" | "bottom";
 }
 
 export type ConditionType = "user_plan" | "url_contains" | "session_count";
