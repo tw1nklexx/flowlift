@@ -42,6 +42,7 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
     initialFlow?.targeting_rules ?? { operator: "AND", conditions: [] },
   );
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState<"step" | "targeting">("step");
 
   const selectedStep = selectedIdx !== null ? steps[selectedIdx] : null;
@@ -88,6 +89,16 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
     });
   }
 
+  async function deleteFlow() {
+    if (!initialFlow?.id) return;
+    if (!confirm("Delete this flow? This cannot be undone.")) return;
+    setDeleting(true);
+    const supabase = createClient();
+    await supabase.from("flows").delete().eq("id", initialFlow.id);
+    router.push("/flows");
+    router.refresh();
+  }
+
   async function save(publish: boolean) {
     setSaving(true);
     const supabase = createClient();
@@ -127,16 +138,25 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
           />
         </div>
         <div className="flex items-center gap-2">
+          {initialFlow?.id && (
+            <button
+              onClick={deleteFlow}
+              disabled={deleting}
+              className="px-4 py-1.5 text-sm border border-red-200 rounded-lg text-red-500 hover:bg-red-50 disabled:opacity-50 transition-colors"
+            >
+              {deleting ? "Deleting…" : "Delete"}
+            </button>
+          )}
           <button
             onClick={() => save(false)}
-            disabled={saving}
+            disabled={saving || deleting}
             className="px-4 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
           >
             Save draft
           </button>
           <button
             onClick={() => save(true)}
-            disabled={saving || steps.length === 0}
+            disabled={saving || deleting || steps.length === 0}
             className="px-4 py-1.5 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
           >
             {saving ? "Saving…" : "Publish"}

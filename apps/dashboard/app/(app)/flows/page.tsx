@@ -54,8 +54,9 @@ export default async function FlowsPage() {
       ) : (
         <div className="grid gap-4">
           {(flows as Flow[]).map((flow) => (
-            <div
+            <Link
               key={flow.id}
+              href={`/flows/${flow.id}`}
               className="bg-white border border-gray-200 rounded-xl p-5 flex items-center justify-between hover:border-brand-300 transition-colors"
             >
               <div>
@@ -76,13 +77,8 @@ export default async function FlowsPage() {
                   {new Date(flow.created_at).toLocaleDateString()}
                 </p>
               </div>
-              <Link
-                href={`/flows/${flow.id}/edit`}
-                className="text-sm text-brand-600 font-medium hover:underline"
-              >
-                Edit
-              </Link>
-            </div>
+              <span className="text-sm text-brand-600 font-medium">Edit →</span>
+            </Link>
           ))}
         </div>
       )}
