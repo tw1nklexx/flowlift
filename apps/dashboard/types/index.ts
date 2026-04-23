@@ -8,6 +8,15 @@ export interface Step {
   cta_label: string;
   cta_action: CtaAction;
   target_selector?: string | null;
+  // Design
+  primaryColor?: string;    // button background, default #4f6ef7
+  textColor?: string;       // body text color
+  borderRadius?: number;    // 0-24 px
+  fontSize?: number;        // 13 | 15 | 17
+  overlayColor?: string;    // modal only — overlay bg hex
+  overlayOpacity?: number;  // modal only — 0-100
+  bgColor?: string;         // banner only — banner background
+  position?: "top" | "bottom"; // banner only
 }
 
 export type ConditionType = "user_plan" | "url_contains" | "session_count";

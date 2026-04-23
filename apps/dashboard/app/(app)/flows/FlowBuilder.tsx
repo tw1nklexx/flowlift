@@ -286,6 +286,16 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
   );
 }
 
+// --- Helpers ---
+
+function hexToRgba(hex: string, opacity: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${opacity / 100})`;
+}
+
 // --- Sub-components ---
 
 function StepTypeIcon({ type }: { type: StepType }) {
@@ -297,43 +307,83 @@ function StepTypeIcon({ type }: { type: StepType }) {
 }
 
 function StepPreview({ step }: { step: Step }) {
+  const primary   = step.primaryColor  ?? "#4f6ef7";
+  const textColor = step.textColor     ?? "#4b5563";
+  const radius    = step.borderRadius  ?? 12;
+  const fontSize  = step.fontSize      ?? 15;
+
   if (step.type === "modal") {
+    const overlayBg = hexToRgba(step.overlayColor ?? "#000000", step.overlayOpacity ?? 45);
     return (
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        {step.title && <h2 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h2>}
-        <p className="text-gray-600 mb-6">{step.body}</p>
-        <button className="bg-brand-600 text-white px-5 py-2 rounded-lg text-sm font-medium">
-          {step.cta_label}
-        </button>
+      <div
+        className="w-full max-w-lg rounded-2xl p-6 flex items-center justify-center shadow-2xl"
+        style={{ background: overlayBg }}
+      >
+        <div className="bg-white w-full p-8 shadow-xl" style={{ borderRadius: radius }}>
+          {step.title && (
+            <h2 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h2>
+          )}
+          <p className="mb-6" style={{ color: textColor, fontSize }}>{step.body}</p>
+          <button
+            className="text-white px-5 py-2 text-sm font-semibold"
+            style={{ backgroundColor: primary, borderRadius: Math.max(4, radius - 4) }}
+          >
+            {step.cta_label}
+          </button>
+        </div>
       </div>
     );
   }
 
   if (step.type === "banner") {
+    const bannerBg = step.bgColor ?? "#4f6ef7";
     return (
-      <div className="w-full max-w-2xl bg-brand-600 text-white px-6 py-4 rounded-xl flex items-center justify-between shadow-lg">
-        <p className="text-sm">{step.body}</p>
-        <button className="ml-6 bg-white text-brand-700 px-4 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap">
-          {step.cta_label}
-        </button>
+      <div className="w-full max-w-2xl flex flex-col gap-1">
+        {step.position === "bottom" && (
+          <p className="text-xs text-gray-400 text-center mb-1">↓ Anchored to bottom</p>
+        )}
+        <div
+          className="flex items-center justify-between px-6 py-4 shadow-lg"
+          style={{ backgroundColor: bannerBg, borderRadius: radius }}
+        >
+          <p className="text-white flex-1" style={{ fontSize }}>{step.body}</p>
+          <button
+            className="ml-6 bg-white font-semibold px-4 py-1.5 text-xs whitespace-nowrap"
+            style={{ color: bannerBg, borderRadius: Math.max(4, radius - 4) }}
+          >
+            {step.cta_label}
+          </button>
+        </div>
+        {step.position !== "bottom" && (
+          <p className="text-xs text-gray-400 text-center mt-1">↑ Anchored to top</p>
+        )}
       </div>
     );
   }
 
   // tooltip
+  const tooltipBg = "#1a1a2e";
   return (
     <div className="relative">
       {step.target_selector && (
-        <div className="mb-2 text-xs text-gray-400 text-center">
+        <p className="mb-2 text-xs text-gray-400 text-center">
           Anchored to: <code className="bg-gray-100 px-1 rounded">{step.target_selector}</code>
-        </div>
+        </p>
       )}
-      <div className="bg-gray-900 text-white rounded-xl px-5 py-4 max-w-xs shadow-xl">
-        <p className="text-sm mb-3">{step.body}</p>
-        <button className="bg-white text-gray-900 px-3 py-1 rounded-lg text-xs font-medium">
+      <div
+        className="text-white px-5 py-4 max-w-xs shadow-xl"
+        style={{ backgroundColor: tooltipBg, borderRadius: radius }}
+      >
+        <p className="mb-3" style={{ color: textColor === "#4b5563" ? "#e5e7eb" : textColor, fontSize }}>
+          {step.body}
+        </p>
+        <button
+          className="text-white px-3 py-1 text-xs font-semibold"
+          style={{ backgroundColor: primary, borderRadius: Math.max(4, radius - 4) }}
+        >
           {step.cta_label}
         </button>
-        <div className="absolute -bottom-2 left-6 w-3 h-3 bg-gray-900 rotate-45" />
+        <div className="absolute -bottom-2 left-6 w-3 h-3 rotate-45" style={{ backgroundColor: tooltipBg }} />
       </div>
     </div>
   );
@@ -348,6 +398,7 @@ function StepPropertiesPanel({
 }) {
   return (
     <div className="space-y-4">
+      {/* Content */}
       <div>
         <label className="block text-xs font-medium text-gray-500 mb-1">Type</label>
         <div className="text-sm text-gray-700 capitalize bg-gray-50 px-3 py-2 rounded-lg">
@@ -355,7 +406,7 @@ function StepPropertiesPanel({
         </div>
       </div>
 
-      {(step.type === "modal" || step.type === "banner") && step.type === "modal" && (
+      {step.type === "modal" && (
         <Field label="Title">
           <input
             value={step.title ?? ""}
@@ -405,6 +456,78 @@ function StepPropertiesPanel({
           <option value="complete">Complete flow</option>
         </select>
       </Field>
+
+      {/* Design */}
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+          Design
+        </p>
+        <div className="space-y-3">
+          <ColorField
+            label="Button color"
+            value={step.primaryColor ?? "#4f6ef7"}
+            onChange={(v) => onChange({ primaryColor: v })}
+          />
+          <ColorField
+            label="Text color"
+            value={step.textColor ?? "#4b5563"}
+            onChange={(v) => onChange({ textColor: v })}
+          />
+          <SliderField
+            label="Border radius"
+            value={step.borderRadius ?? 12}
+            min={0} max={24} unit="px"
+            onChange={(v) => onChange({ borderRadius: v })}
+          />
+          <Field label="Font size">
+            <select
+              value={step.fontSize ?? 15}
+              onChange={(e) => onChange({ fontSize: Number(e.target.value) })}
+              className={inputCls}
+            >
+              <option value={13}>Small (13px)</option>
+              <option value={15}>Medium (15px)</option>
+              <option value={17}>Large (17px)</option>
+            </select>
+          </Field>
+
+          {step.type === "modal" && (
+            <>
+              <ColorField
+                label="Overlay color"
+                value={step.overlayColor ?? "#000000"}
+                onChange={(v) => onChange({ overlayColor: v })}
+              />
+              <SliderField
+                label="Overlay opacity"
+                value={step.overlayOpacity ?? 45}
+                min={0} max={100} unit="%"
+                onChange={(v) => onChange({ overlayOpacity: v })}
+              />
+            </>
+          )}
+
+          {step.type === "banner" && (
+            <>
+              <ColorField
+                label="Background color"
+                value={step.bgColor ?? "#4f6ef7"}
+                onChange={(v) => onChange({ bgColor: v })}
+              />
+              <Field label="Position">
+                <select
+                  value={step.position ?? "top"}
+                  onChange={(e) => onChange({ position: e.target.value as "top" | "bottom" })}
+                  className={inputCls}
+                >
+                  <option value="top">Top</option>
+                  <option value="bottom">Bottom</option>
+                </select>
+              </Field>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -524,6 +647,64 @@ function ConditionRow({
         className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
       />
     </div>
+  );
+}
+
+function ColorField({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-8 w-10 rounded border border-gray-200 cursor-pointer p-0.5 bg-white"
+        />
+        <span className="text-xs font-mono text-gray-400">{value}</span>
+      </div>
+    </Field>
+  );
+}
+
+function SliderField({
+  label,
+  value,
+  min,
+  max,
+  unit,
+  onChange,
+}: {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  unit: string;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-2">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => onChange(Number(e.target.value))}
+          className="flex-1 accent-brand-600"
+        />
+        <span className="text-xs font-mono text-gray-400 w-10 text-right">
+          {value}{unit}
+        </span>
+      </div>
+    </Field>
   );
 }
 

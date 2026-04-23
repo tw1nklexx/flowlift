@@ -7,6 +7,23 @@ export interface Step {
   cta_label: string;
   cta_action: "next" | "complete";
   target_selector?: string | null;
+  // Design
+  primaryColor?: string;
+  textColor?: string;
+  borderRadius?: number;
+  fontSize?: number;
+  overlayColor?: string;
+  overlayOpacity?: number;
+  bgColor?: string;
+  position?: "top" | "bottom";
+}
+
+function hexToRgba(hex: string, opacity: number): string {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${opacity / 100})`;
 }
 
 interface RenderContext {
@@ -110,8 +127,17 @@ function renderModal(
   idx: number,
   total: number,
 ): void {
+  const primary   = step.primaryColor  ?? "#4f6ef7";
+  const textColor = step.textColor     ?? "#555";
+  const radius    = step.borderRadius  ?? 16;
+  const fontSize  = step.fontSize      ?? 15;
+  const overlayBg = hexToRgba(step.overlayColor ?? "#000000", step.overlayOpacity ?? 45);
+
   const ov = makeEl("div", "fl-overlay");
+  ov.style.background = overlayBg;
+
   const box = makeEl("div", "fl-modal");
+  box.style.borderRadius = `${radius}px`;
 
   const dismiss = makeEl("button", "fl-dismiss", { textContent: "✕" });
   dismiss.onclick = onDismiss;
@@ -123,9 +149,13 @@ function renderModal(
   }
 
   const body = makeEl("p", "fl-modal-body", { textContent: step.body });
+  body.style.color = textColor;
+  body.style.fontSize = `${fontSize}px`;
   box.appendChild(body);
 
   const btn = makeEl("button", "fl-btn", { textContent: step.cta_label });
+  btn.style.backgroundColor = primary;
+  btn.style.borderRadius = `${Math.max(4, radius - 4)}px`;
   btn.onclick = onNext;
   box.appendChild(btn);
 
@@ -141,12 +171,26 @@ function renderModal(
 }
 
 function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): void {
+  const bgColor   = step.bgColor      ?? "#4f6ef7";
+  const fontSize  = step.fontSize     ?? 14;
+  const radius    = step.borderRadius ?? 0;
+
   const banner = makeEl("div", "fl-banner");
+  banner.style.backgroundColor = bgColor;
+  banner.style.borderRadius = `${radius}px`;
+  // position: top (default) or bottom
+  if (step.position === "bottom") {
+    banner.style.top = "auto";
+    banner.style.bottom = "0";
+  }
 
   const body = makeEl("span", "fl-banner-body", { textContent: step.body });
+  body.style.fontSize = `${fontSize}px`;
   banner.appendChild(body);
 
   const btn = makeEl("button", "fl-banner-btn", { textContent: step.cta_label });
+  btn.style.color = bgColor;
+  btn.style.borderRadius = `${Math.max(4, radius - 2)}px`;
   btn.onclick = onNext;
   banner.appendChild(btn);
 
@@ -159,22 +203,32 @@ function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): vo
 }
 
 function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): void {
+  const primary   = step.primaryColor ?? "#4f6ef7";
+  const textColor = step.textColor    ?? "#e5e7eb";
+  const radius    = step.borderRadius ?? 10;
+  const fontSize  = step.fontSize     ?? 14;
+  const tooltipBg = "#1a1a2e";
+
   let anchor: Element | null = null;
   if (step.target_selector) {
     anchor = document.querySelector(step.target_selector);
   }
 
   const tooltip = makeEl("div", "fl-tooltip");
+  tooltip.style.borderRadius = `${radius}px`;
 
   const body = makeEl("p", "fl-tooltip-body", { textContent: step.body });
+  body.style.color = textColor;
+  body.style.fontSize = `${fontSize}px`;
   tooltip.appendChild(body);
 
   const btn = makeEl("button", "fl-btn", { textContent: step.cta_label });
-  btn.style.cssText = "font-size:13px;padding:6px 14px;";
+  btn.style.cssText = `font-size:13px;padding:6px 14px;background:${primary};border-radius:${Math.max(4, radius - 4)}px;`;
   btn.onclick = onNext;
   tooltip.appendChild(btn);
 
   const arrow = makeEl("div", "fl-tooltip-arrow");
+  arrow.style.background = tooltipBg;
   tooltip.appendChild(arrow);
 
   document.body.appendChild(tooltip);
