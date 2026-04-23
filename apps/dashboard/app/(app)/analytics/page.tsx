@@ -1,6 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Flow, FlowEvent, FlowAnalytics } from "@/types";
 import AnalyticsChart from "./AnalyticsChart";
+
+interface FlowStat {
+  flow_id: string;
+  flow_name: string;
+  impressions: number;
+  completions: number;
+  completion_rate: number;
+}
 
 export default async function AnalyticsPage() {
   const supabase = createClient();
@@ -21,61 +28,84 @@ export default async function AnalyticsPage() {
     );
   }
 
-  const { data: flows } = await supabase
-    .from("flows")
-    .select("id, name")
-    .eq("project_id", project.id);
+  // Parallel queries: total impression count, total completion count, flows list, all events
+  const [
+    { count: totalImpressions },
+    { count: totalCompletions },
+    { data: flows },
+    { data: events },
+  ] = await Promise.all([
+    supabase
+      .from("flow_events")
+      .select("*", { count: "exact", head: true })
+      .eq("project_id", project.id)
+      .eq("event_type", "flow_shown"),
+    supabase
+      .from("flow_events")
+      .select("*", { count: "exact", head: true })
+      .eq("project_id", project.id)
+      .eq("event_type", "flow_completed"),
+    supabase
+      .from("flows")
+      .select("id, name")
+      .eq("project_id", project.id)
+      .order("created_at", { ascending: true }),
+    supabase
+      .from("flow_events")
+      .select("flow_id, event_type")
+      .eq("project_id", project.id)
+      .in("event_type", ["flow_shown", "flow_completed"]),
+  ]);
 
-  const { data: events } = await supabase
-    .from("flow_events")
-    .select("flow_id, session_id, event_type")
-    .eq("project_id", project.id);
+  const impressions = totalImpressions ?? 0;
+  const completions = totalCompletions ?? 0;
+  const overallRate =
+    impressions > 0
+      ? Math.round((completions / impressions) * 1000) / 10
+      : 0;
 
-  const analytics: FlowAnalytics[] = (flows ?? []).map((flow: Pick<Flow, "id" | "name">) => {
-    const flowEvents = (events as FlowEvent[] ?? []).filter((e) => e.flow_id === flow.id);
-    const shownSessions = new Set(
-      flowEvents.filter((e) => e.event_type === "flow_shown").map((e) => e.session_id),
-    );
-    const completedSessions = new Set(
-      flowEvents.filter((e) => e.event_type === "flow_completed").map((e) => e.session_id),
-    );
-    const shown = shownSessions.size;
-    const completed = completedSessions.size;
+  // Build per-flow stats from the events array
+  const stats: FlowStat[] = (flows ?? []).map((flow) => {
+    const flowEvents = (events ?? []).filter((e) => e.flow_id === flow.id);
+    const shown = flowEvents.filter((e) => e.event_type === "flow_shown").length;
+    const completed = flowEvents.filter((e) => e.event_type === "flow_completed").length;
     return {
       flow_id: flow.id,
       flow_name: flow.name,
-      shown,
-      completed,
-      completion_rate: shown > 0 ? Math.round((completed / shown) * 100) : 0,
+      impressions: shown,
+      completions: completed,
+      completion_rate: shown > 0 ? Math.round((completed / shown) * 1000) / 10 : 0,
     };
   });
 
-  const totalShown = analytics.reduce((s, a) => s + a.shown, 0);
-  const totalCompleted = analytics.reduce((s, a) => s + a.completed, 0);
+  const hasData = impressions > 0;
 
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold text-gray-900 mb-8">Analytics</h1>
 
       <div className="grid grid-cols-3 gap-4 mb-8">
-        <StatCard label="Total impressions" value={totalShown} />
-        <StatCard label="Total completions" value={totalCompleted} />
-        <StatCard
-          label="Overall completion rate"
-          value={`${totalShown > 0 ? Math.round((totalCompleted / totalShown) * 100) : 0}%`}
-        />
+        <StatCard label="Impressions" value={impressions} />
+        <StatCard label="Completions" value={completions} />
+        <StatCard label="Completion rate" value={`${overallRate}%`} />
       </div>
 
-      {analytics.length === 0 ? (
+      {!hasData ? (
         <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
           <p className="text-4xl mb-4">📊</p>
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">No data yet</h2>
-          <p className="text-sm text-gray-500">Events will appear here once users see your flows.</p>
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            No analytics data yet
+          </h2>
+          <p className="text-sm text-gray-500">
+            Create and publish a flow to start tracking.
+          </p>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-gray-200 p-6">
-          <h2 className="text-base font-semibold text-gray-800 mb-6">Completion rate by flow</h2>
-          <AnalyticsChart data={analytics} />
+          <h2 className="text-base font-semibold text-gray-800 mb-6">
+            Impressions vs completions by flow
+          </h2>
+          <AnalyticsChart data={stats} />
         </div>
       )}
     </div>
