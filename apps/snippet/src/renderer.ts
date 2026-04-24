@@ -58,6 +58,7 @@ interface RenderContext {
 
 let overlay: HTMLElement | null = null;
 let watermark: HTMLElement | null = null;
+let _hideWatermark = false;
 
 const STYLES = `
   .fl-reset { all: initial; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; box-sizing: border-box; }
@@ -95,15 +96,16 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-function injectWatermark(_hide?: boolean): void {
-  if (document.getElementById("fl-watermark")) return;
+function injectWatermark(container: HTMLElement = document.body): void {
+  console.log("FlowLift: injecting watermark");
+  if (_hideWatermark || document.getElementById("fl-watermark")) return;
   const badge = makeEl("a", "fl-watermark");
   badge.id = "fl-watermark";
   (badge as HTMLAnchorElement).href = "https://flowlift.io";
   (badge as HTMLAnchorElement).target = "_blank";
   (badge as HTMLAnchorElement).rel = "noopener noreferrer";
   badge.textContent = "⚡ Powered by FlowLift";
-  document.body.appendChild(badge);
+  container.appendChild(badge);
   watermark = badge;
 }
 
@@ -128,7 +130,7 @@ function makeEl<K extends keyof HTMLElementTagNameMap>(
 export function renderStep(ctx: RenderContext): void {
   cleanup();
   injectStyles();
-  injectWatermark(ctx.hideWatermark);
+  _hideWatermark = ctx.hideWatermark ?? false;
 
   const { steps, currentIndex, flowId, sessionId } = ctx;
   const step = steps[currentIndex];
@@ -232,6 +234,7 @@ function renderModal(
   ov.onclick = (e) => { if (e.target === ov) onDismiss(); };
   document.body.appendChild(ov);
   overlay = ov;
+  injectWatermark(ov);
 }
 
 function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): void {
@@ -265,6 +268,7 @@ function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): vo
 
   document.body.appendChild(banner);
   overlay = banner;
+  injectWatermark();
 }
 
 function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): void {
@@ -301,6 +305,7 @@ function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): v
 
   document.body.appendChild(tooltip);
   overlay = tooltip;
+  injectWatermark();
 
   if (anchor) {
     const rect = anchor.getBoundingClientRect();

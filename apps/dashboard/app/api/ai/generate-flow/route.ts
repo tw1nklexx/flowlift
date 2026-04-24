@@ -69,11 +69,15 @@ export async function POST(req: Request) {
     });
 
     const text = response.content.find((b) => b.type === "text")?.text ?? "";
+    console.log("AI raw response:", text);
+
+    const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
 
     let flow: { name: string; targeting_rules: object; steps: object[] };
     try {
-      flow = JSON.parse(text);
-    } catch {
+      flow = JSON.parse(cleaned);
+    } catch (parseErr) {
+      console.error("AI JSON parse failed. Raw text:", text, "Parse error:", parseErr);
       return NextResponse.json({ error: "AI returned invalid JSON" }, { status: 500 });
     }
 
