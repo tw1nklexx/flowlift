@@ -1,6 +1,6 @@
 import { matchesRules, type UserProps } from "./engine";
 import { initTracker, track } from "./tracker";
-import { renderStep, cleanup, removeWatermark } from "./renderer";
+import { renderStep, cleanup } from "./renderer";
 
 interface InitOptions {
   apiUrl?: string;
@@ -125,7 +125,6 @@ export function identify(userProps: UserProps): void {
     const merged: UserProps = { session_count: visitCount, ...userProps };
 
     // Cancel any currently showing flow, then re-evaluate with real identity
-    removeWatermark();
     cleanup();
     fetchAndRun(merged);
   }

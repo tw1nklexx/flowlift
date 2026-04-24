@@ -28,6 +28,16 @@ function animClass(anim?: Step["animation"]): string {
   return `pr-anim-${anim}`;
 }
 
+function isColorDark(hex: string): boolean {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  return (Math.max(r, g, b) + Math.min(r, g, b)) / 2 < 0.5;
+}
+
+const WM_FONT = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+
 // ── main component ────────────────────────────────────────────────────────────
 
 export default function PreviewModal({ steps, flowName, onClose }: Props) {
@@ -129,28 +139,6 @@ export default function PreviewModal({ steps, flowName, onClose }: Props) {
             <FakeAppUI />
             {/* step key drives remount → CSS animation restarts */}
             <StepLayer key={currentIdx} step={step} onNext={goNext} onDismiss={restart} />
-            {/* watermark */}
-            <div
-              style={{
-                position: "absolute",
-                bottom: 12,
-                right: 12,
-                display: "inline-flex",
-                alignItems: "center",
-                background: "white",
-                border: "1px solid #e5e7eb",
-                borderRadius: 20,
-                padding: "4px 10px",
-                fontSize: 11,
-                color: "#6b7280",
-                boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
-                zIndex: 10,
-                pointerEvents: "none",
-                userSelect: "none",
-              }}
-            >
-              ⚡ Powered by FlowLift
-            </div>
           </div>
         </div>
 
@@ -338,6 +326,9 @@ function ModalStep({ step, onNext, onDismiss }: StepRenderProps) {
         >
           {step.cta_label}
         </button>
+        <span style={{ position: "absolute", bottom: 10, right: 14, fontSize: 10, color: "rgba(0,0,0,0.35)", fontFamily: WM_FONT, pointerEvents: "none" }}>
+          ⚡ Powered by FlowLift
+        </span>
       </div>
     </div>
   );
@@ -372,6 +363,9 @@ function BannerStep({ step, onNext, onDismiss }: StepRenderProps) {
       >
         {step.cta_label}
       </button>
+      <span style={{ fontSize: 10, color: isColorDark(bgColor) ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.35)", marginLeft: 12, whiteSpace: "nowrap", fontFamily: WM_FONT, flexShrink: 0 }}>
+        | ⚡ Powered by FlowLift
+      </span>
       <button
         onClick={onDismiss}
         style={{
@@ -422,6 +416,9 @@ function TooltipStep({ step, onNext }: { step: Step; onNext: () => void }) {
       >
         {step.cta_label}
       </button>
+      <span style={{ display: "block", fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 10, fontFamily: WM_FONT }}>
+        ⚡ Powered by FlowLift
+      </span>
       {/* arrow */}
       <div
         style={{

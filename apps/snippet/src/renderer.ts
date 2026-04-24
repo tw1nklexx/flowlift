@@ -57,7 +57,6 @@ interface RenderContext {
 }
 
 let overlay: HTMLElement | null = null;
-let watermark: HTMLElement | null = null;
 let _hideWatermark = false;
 
 const STYLES = `
@@ -84,8 +83,6 @@ const STYLES = `
   .fl-anim-fade { animation: fl-fade 300ms ease forwards; }
   .fl-anim-slide { animation: fl-slide 300ms ease forwards; }
   .fl-anim-bounce { animation: fl-bounce 400ms ease forwards; }
-  .fl-watermark { position: fixed; bottom: 16px; right: 16px; display: inline-flex; align-items: center; background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 4px 10px; font-size: 11px; color: #6b7280; box-shadow: 0 1px 4px rgba(0,0,0,0.1); z-index: 2147483647; text-decoration: none; cursor: pointer; }
-  .fl-watermark:hover { opacity: 0.8; }
 `;
 
 function injectStyles(): void {
@@ -96,23 +93,12 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-function injectWatermark(): void {
-  if (_hideWatermark || document.getElementById("fl-watermark")) return;
-  const badge = makeEl("a", "fl-watermark");
-  badge.id = "fl-watermark";
-  (badge as HTMLAnchorElement).href = "https://flowlift.io";
-  (badge as HTMLAnchorElement).target = "_blank";
-  (badge as HTMLAnchorElement).rel = "noopener noreferrer";
-  badge.textContent = "⚡ Powered by FlowLift";
-  document.body.appendChild(badge);
-  watermark = badge;
-}
-
-export function removeWatermark(): void {
-  if (watermark) {
-    watermark.remove();
-    watermark = null;
-  }
+function isColorDark(hex: string): boolean {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  return (Math.max(r, g, b) + Math.min(r, g, b)) / 2 < 0.5;
 }
 
 function makeEl<K extends keyof HTMLElementTagNameMap>(
@@ -156,14 +142,12 @@ export function renderStep(ctx: RenderContext): void {
 
   function complete() {
     track({ flow_id: flowId, session_id: sessionId, event_type: "flow_completed" });
-    removeWatermark();
     cleanup();
     ctx.onComplete();
   }
 
   function dismiss() {
     track({ flow_id: flowId, session_id: sessionId, event_type: "flow_dismissed" });
-    removeWatermark();
     cleanup();
     ctx.onDismiss();
   }
@@ -229,11 +213,18 @@ function renderModal(
     box.appendChild(prog);
   }
 
+  if (!_hideWatermark) {
+    box.style.position = "relative";
+    const wm = document.createElement("span");
+    wm.textContent = "⚡ Powered by FlowLift";
+    wm.style.cssText = "position:absolute;bottom:10px;right:14px;font-size:10px;color:rgba(0,0,0,0.35);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;pointer-events:none;";
+    box.appendChild(wm);
+  }
+
   ov.appendChild(box);
   ov.onclick = (e) => { if (e.target === ov) onDismiss(); };
   document.body.appendChild(ov);
   overlay = ov;
-  injectWatermark();
 }
 
 function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): void {
@@ -261,13 +252,20 @@ function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): vo
   btn.onclick = onNext;
   banner.appendChild(btn);
 
+  if (!_hideWatermark) {
+    const wmColor = isColorDark(bgColor) ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.35)";
+    const wm = document.createElement("span");
+    wm.textContent = "| ⚡ Powered by FlowLift";
+    wm.style.cssText = `font-size:10px;color:${wmColor};margin-left:12px;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;flex-shrink:0;`;
+    banner.appendChild(wm);
+  }
+
   const dismiss = makeEl("button", "fl-banner-dismiss", { textContent: "✕" });
   dismiss.onclick = onDismiss;
   banner.appendChild(dismiss);
 
   document.body.appendChild(banner);
   overlay = banner;
-  injectWatermark();
 }
 
 function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): void {
@@ -298,13 +296,19 @@ function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): v
   btn.onclick = onNext;
   tooltip.appendChild(btn);
 
+  if (!_hideWatermark) {
+    const wm = document.createElement("span");
+    wm.textContent = "⚡ Powered by FlowLift";
+    wm.style.cssText = "display:block;font-size:10px;color:rgba(255,255,255,0.6);margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;";
+    tooltip.appendChild(wm);
+  }
+
   const arrow = makeEl("div", "fl-tooltip-arrow");
   arrow.style.background = tooltipBg;
   tooltip.appendChild(arrow);
 
   document.body.appendChild(tooltip);
   overlay = tooltip;
-  injectWatermark();
 
   if (anchor) {
     const rect = anchor.getBoundingClientRect();
