@@ -1,5 +1,25 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const DEMO_FLOW = {
+  id: "demo_flow",
+  name: "Demo Flow",
+  is_demo: true,
+  targeting_rules: { operator: "AND", conditions: [] },
+  steps: [
+    {
+      type: "banner",
+      body: "👋 FlowLift is working! This is a demo flow — create your own in the dashboard.",
+      cta_label: "Open dashboard",
+      cta_action: "link",
+      cta_url: "https://flowlift.vercel.app",
+      bgColor: "#4f6ef7",
+      btnColor: "#ffffff",
+      btnTextColor: "#4f6ef7",
+      position: "top",
+    },
+  ],
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -49,7 +69,11 @@ Deno.serve(async (req) => {
 
     if (flowsErr) throw flowsErr;
 
-    return new Response(JSON.stringify({ flows: flows ?? [] }), {
+    // Return the demo flow when the project has no published flows yet —
+    // gives new users an instant "it works" moment after pasting the snippet.
+    const result = flows && flows.length > 0 ? flows : [DEMO_FLOW];
+
+    return new Response(JSON.stringify({ flows: result }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

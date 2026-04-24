@@ -5,7 +5,8 @@ export interface Step {
   title?: string;
   body: string;
   cta_label: string;
-  cta_action: "next" | "complete";
+  cta_action: "next" | "complete" | "link";
+  cta_url?: string;
   target_selector?: string | null;
   // Typography
   titleColor?: string;
@@ -110,6 +111,10 @@ export function renderStep(ctx: RenderContext): void {
   const isLast = currentIndex === steps.length - 1;
 
   function advance() {
+    if (step.cta_action === "link") {
+      if (step.cta_url) window.open(step.cta_url, "_blank");
+      return;
+    }
     track({
       flow_id: flowId,
       session_id: sessionId,
