@@ -1,8 +1,12 @@
 import Link from "next/link";
 import CopyButton from "./CopyButton";
 
+const SNIPPET_URL = process.env.NEXT_PUBLIC_APP_URL
+  ? `${process.env.NEXT_PUBLIC_APP_URL}/snippet`
+  : "https://your-app.com/snippet";
+
 const INSTALL_CODE =
-  `<script src="https://your-app.com/snippet" async></script>\n` +
+  `<script src="${SNIPPET_URL}" async></script>\n` +
   `<script>FlowLift.init("proj_xxxxxxxxxxxx");</script>`;
 
 const IDENTIFY_CODE =
@@ -78,71 +82,83 @@ export default function DocsPage() {
               <SectionHeader
                 id="quickstart"
                 title="Get started in 10 minutes"
-                subtitle="Add two lines to your app. Your developer does it once — after that, you manage everything from the dashboard."
+                subtitle="One line of code. Your developer does it once — after that, you manage everything from the dashboard."
               />
 
               <h3 className="text-sm font-semibold text-gray-800 mb-3">1. Install the snippet</h3>
               <CodeBlock filename="index.html" code={INSTALL_CODE} />
-              <p className="text-sm text-gray-500 mt-3 mb-8">
+              <p className="text-sm text-gray-500 mt-3 mb-2">
                 Replace{" "}
                 <Mono>proj_xxxxxxxxxxxx</Mono>{" "}
                 with your project key from the{" "}
                 <Link href="/settings" className="text-[#4f6ef7] hover:underline">Settings page</Link>.
               </p>
-
-              <h3 className="text-sm font-semibold text-gray-800 mb-3">2. Identify your user</h3>
-              <p className="text-sm text-gray-500 mb-4 leading-relaxed">
-                Call <Mono>FlowLift.identify()</Mono> after your user logs in. This tells
-                FlowLift who the current user is so targeting rules can match.
-              </p>
-              <CodeBlock code={IDENTIFY_CODE} />
-
-              <div className="mt-4 border border-gray-100 rounded-xl overflow-hidden">
-                {[
-                  {
-                    name: "id",
-                    type: "string",
-                    desc: "Your user's unique ID from your database.",
-                  },
-                  {
-                    name: "plan",
-                    type: '"free" | "pro"',
-                    desc: "Their current subscription tier. Used in upgrade-prompt targeting.",
-                  },
-                  {
-                    name: "session_count",
-                    type: "number",
-                    desc: "Number of sessions this user has had. Target first-timers or power users.",
-                  },
-                  {
-                    name: "role",
-                    type: "string (optional)",
-                    desc: 'Any role string — e.g. "admin" or "viewer". Available for future targeting rules.',
-                  },
-                ].map((p, i, arr) => (
-                  <div
-                    key={p.name}
-                    className={`flex items-start gap-4 px-5 py-3.5 ${i < arr.length - 1 ? "border-b border-gray-50" : ""}`}
-                  >
-                    <div className="shrink-0 w-44">
-                      <code className="bg-gray-100 text-gray-800 px-2 py-0.5 rounded text-xs font-mono font-semibold">
-                        {p.name}
-                      </code>
-                      <span className="block text-[11px] text-gray-400 font-mono mt-0.5 ml-0.5">
-                        {p.type}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 leading-relaxed">{p.desc}</p>
-                  </div>
-                ))}
-              </div>
-
-              <Tip className="mt-6">
-                <strong>Tip:</strong> Call <Mono blue>identify()</Mono> every session — FlowLift
-                always uses the latest values for targeting. It&apos;s fine to call{" "}
-                <Mono blue>init()</Mono> before the user is known; just follow it with{" "}
-                <Mono blue>identify()</Mono> as soon as you have their data.
+              <Tip className="mb-8">
+                Works immediately, no configuration needed. FlowLift will show a demo flow
+                so you can confirm it&apos;s installed correctly.
               </Tip>
+
+              {/* Optional: identify */}
+              <div className="border border-gray-100 rounded-xl p-6 mb-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="text-sm font-semibold text-gray-800">Optional: identify your users for smarter targeting</h3>
+                  <span className="text-[10px] font-semibold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                    optional
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 mb-4 leading-relaxed">
+                  Call <Mono>FlowLift.identify()</Mono> after your user logs in to unlock
+                  plan-based and session-based targeting rules.
+                </p>
+                <CodeBlock code={IDENTIFY_CODE} />
+
+                <div className="mt-4 border border-gray-100 rounded-xl overflow-hidden">
+                  {[
+                    {
+                      name: "id",
+                      type: "string",
+                      desc: "Your user's unique ID from your database.",
+                    },
+                    {
+                      name: "plan",
+                      type: '"free" | "pro"',
+                      desc: "Their current subscription tier. Used in upgrade-prompt targeting.",
+                    },
+                    {
+                      name: "session_count",
+                      type: "number",
+                      desc: "Number of sessions this user has had. Target first-timers or power users.",
+                    },
+                    {
+                      name: "role",
+                      type: "string (optional)",
+                      desc: 'Any role string — e.g. "admin" or "viewer". Available for future targeting rules.',
+                    },
+                  ].map((p, i, arr) => (
+                    <div
+                      key={p.name}
+                      className={`flex items-start gap-4 px-5 py-3.5 ${i < arr.length - 1 ? "border-b border-gray-50" : ""}`}
+                    >
+                      <div className="shrink-0 w-44">
+                        <code className="bg-gray-100 text-gray-800 px-2 py-0.5 rounded text-xs font-mono font-semibold">
+                          {p.name}
+                        </code>
+                        <span className="block text-[11px] text-gray-400 font-mono mt-0.5 ml-0.5">
+                          {p.type}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600 leading-relaxed">{p.desc}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <Tip className="mt-5">
+                  <strong>Tip:</strong> Call <Mono blue>identify()</Mono> every session — FlowLift
+                  always uses the latest values for targeting. It&apos;s fine to call{" "}
+                  <Mono blue>init()</Mono> before the user is known; just follow it with{" "}
+                  <Mono blue>identify()</Mono> as soon as you have their data.
+                </Tip>
+              </div>
             </section>
 
             <Divider />

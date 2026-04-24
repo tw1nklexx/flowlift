@@ -11,7 +11,7 @@ const DEMO_FLOW = {
       body: "👋 FlowLift is working! This is a demo flow — create your own in the dashboard.",
       cta_label: "Open dashboard",
       cta_action: "link",
-      cta_url: "https://flowlift.vercel.app",
+      cta_url: "https://flowlift-dashboard-al1ydr19w-tw1nklexxs-projects.vercel.app",
       bgColor: "#4f6ef7",
       btnColor: "#ffffff",
       btnTextColor: "#4f6ef7",

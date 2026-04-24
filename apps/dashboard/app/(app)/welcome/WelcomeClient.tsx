@@ -13,6 +13,7 @@ export default function WelcomeClient({ apiKey }: Props) {
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [copied, setCopied] = useState<"key" | "snippet" | null>(null);
   const [snippetSrc, setSnippetSrc] = useState("https://your-app.com/snippet");
+  const [installTab, setInstallTab] = useState<"simple" | "advanced">("simple");
 
   useEffect(() => {
     setSnippetSrc(`${window.location.origin}/snippet`);
@@ -49,7 +50,9 @@ export default function WelcomeClient({ apiKey }: Props) {
     setTimeout(() => setCopied(null), 2000);
   }
 
-  const installCode = `<script src="${snippetSrc}" async></script>\n<script>FlowLift.init("${apiKey}")</script>`;
+  const simpleCode = `<script src="${snippetSrc}" async></script>\n<script>FlowLift.init("${apiKey}")</script>`;
+  const advancedCode = `<script src="${snippetSrc}" async></script>\n<script>\n  FlowLift.init("${apiKey}");\n  FlowLift.identify({ id: user.id, plan: user.plan });\n</script>`;
+  const installCode = installTab === "simple" ? simpleCode : advancedCode;
 
   return (
     <>
@@ -135,7 +138,24 @@ export default function WelcomeClient({ apiKey }: Props) {
               title="Add one line to your app"
               body={`Drop this before the closing </body> tag. Your developer does it once — you own everything after that.`}
             >
-              <div className="mt-4 bg-[#0d1117] rounded-xl px-4 py-3.5">
+              {/* Simple / Advanced tabs */}
+              <div className="mt-4 flex gap-0 border border-gray-200 rounded-lg overflow-hidden w-fit">
+                {(["simple", "advanced"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => { setInstallTab(tab); setCopied(null); }}
+                    className={`px-3 py-1.5 text-xs font-semibold transition-colors capitalize ${
+                      installTab === tab
+                        ? "bg-[#4f6ef7] text-white"
+                        : "bg-white text-gray-500 hover:text-gray-800"
+                    }`}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-2 bg-[#0d1117] rounded-xl px-4 py-3.5">
                 <div className="flex items-start justify-between gap-4">
                   <pre className="text-emerald-400 text-xs font-mono leading-relaxed overflow-x-auto flex-1 whitespace-pre">
                     {installCode}
@@ -148,6 +168,13 @@ export default function WelcomeClient({ apiKey }: Props) {
                   </button>
                 </div>
               </div>
+
+              <p className="mt-2 text-xs text-gray-400">
+                {installTab === "simple"
+                  ? "That's it. No identify() needed to get started."
+                  : "Add this after your user logs in for smarter targeting."}
+              </p>
+
               {!step2Done && (
                 <button
                   onClick={completeStep2}

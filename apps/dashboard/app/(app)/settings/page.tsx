@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/types";
 import ApiKeyDisplay from "./ApiKeyDisplay";
 import BillingSection from "./BillingSection";
+import InstallTabs from "./InstallTabs";
 
 export default async function SettingsPage() {
   const supabase = createClient();
@@ -32,9 +33,14 @@ export default async function SettingsPage() {
       <section className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
         <h2 className="text-base font-semibold text-gray-900 mb-1">Installation</h2>
         <p className="text-sm text-gray-500 mb-4">
-          Add these two lines before the closing <code>&lt;/body&gt;</code> tag.
+          Add this before the closing <code>&lt;/body&gt;</code> tag.
         </p>
-        {project && <InstallSnippet apiKey={project.api_key} />}
+        {project && (
+          <InstallTabs
+            apiKey={project.api_key}
+            snippetUrl={`${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/snippet`}
+          />
+        )}
       </section>
 
       <section className="bg-white border border-gray-200 rounded-2xl p-6">
@@ -45,21 +51,3 @@ export default async function SettingsPage() {
   );
 }
 
-function InstallSnippet({ apiKey }: { apiKey: string }) {
-  const snippetUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/snippet`;
-  const code = `<script src="${snippetUrl}"></script>
-<script>
-  FlowLift.init("${apiKey}");
-  FlowLift.identify({
-    id: user.id,
-    plan: user.plan,       // "free" | "pro"
-    session_count: 1,      // pass from your backend
-  });
-</script>`;
-
-  return (
-    <pre className="bg-gray-900 text-gray-100 rounded-xl p-4 text-xs overflow-x-auto">
-      {code}
-    </pre>
-  );
-}
