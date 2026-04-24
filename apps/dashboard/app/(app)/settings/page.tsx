@@ -40,10 +40,17 @@ export default async function SettingsPage() {
         )}
       </section>
 
-      <section className="bg-white border border-gray-200 rounded-2xl p-6">
+      <section className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
         <h2 className="text-base font-semibold text-gray-900 mb-1">Billing</h2>
         <BillingSection plan={project?.plan ?? "free"} />
       </section>
+
+      {(project?.plan ?? "free") === "free" && (
+        <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-500">
+          ⚡ <span className="font-medium text-gray-700">Watermark:</span> The &quot;Powered by FlowLift&quot; badge appears on your flows.{" "}
+          Upgrade to Starter to remove it.
+        </div>
+      )}
     </div>
   );
 }

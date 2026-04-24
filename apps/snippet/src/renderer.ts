@@ -84,7 +84,7 @@ const STYLES = `
   .fl-anim-fade { animation: fl-fade 300ms ease forwards; }
   .fl-anim-slide { animation: fl-slide 300ms ease forwards; }
   .fl-anim-bounce { animation: fl-bounce 400ms ease forwards; }
-  .fl-watermark { position: fixed; bottom: 16px; right: 16px; display: inline-flex; align-items: center; background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 4px 10px; font-size: 11px; color: #6b7280; box-shadow: 0 1px 4px rgba(0,0,0,0.1); z-index: 2147483645; text-decoration: none; cursor: pointer; }
+  .fl-watermark { position: fixed; bottom: 16px; right: 16px; display: inline-flex; align-items: center; background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 4px 10px; font-size: 11px; color: #6b7280; box-shadow: 0 1px 4px rgba(0,0,0,0.1); z-index: 2147483647; text-decoration: none; cursor: pointer; }
   .fl-watermark:hover { opacity: 0.8; }
 `;
 
@@ -96,8 +96,7 @@ function injectStyles(): void {
   document.head.appendChild(style);
 }
 
-function injectWatermark(container: HTMLElement = document.body): void {
-  console.log("FlowLift: injecting watermark");
+function injectWatermark(): void {
   if (_hideWatermark || document.getElementById("fl-watermark")) return;
   const badge = makeEl("a", "fl-watermark");
   badge.id = "fl-watermark";
@@ -105,7 +104,7 @@ function injectWatermark(container: HTMLElement = document.body): void {
   (badge as HTMLAnchorElement).target = "_blank";
   (badge as HTMLAnchorElement).rel = "noopener noreferrer";
   badge.textContent = "⚡ Powered by FlowLift";
-  container.appendChild(badge);
+  document.body.appendChild(badge);
   watermark = badge;
 }
 
@@ -234,7 +233,7 @@ function renderModal(
   ov.onclick = (e) => { if (e.target === ov) onDismiss(); };
   document.body.appendChild(ov);
   overlay = ov;
-  injectWatermark(ov);
+  injectWatermark();
 }
 
 function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): void {

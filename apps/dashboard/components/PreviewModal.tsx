@@ -129,6 +129,28 @@ export default function PreviewModal({ steps, flowName, onClose }: Props) {
             <FakeAppUI />
             {/* step key drives remount → CSS animation restarts */}
             <StepLayer key={currentIdx} step={step} onNext={goNext} onDismiss={restart} />
+            {/* watermark */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: 12,
+                right: 12,
+                display: "inline-flex",
+                alignItems: "center",
+                background: "white",
+                border: "1px solid #e5e7eb",
+                borderRadius: 20,
+                padding: "4px 10px",
+                fontSize: 11,
+                color: "#6b7280",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.1)",
+                zIndex: 10,
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            >
+              ⚡ Powered by FlowLift
+            </div>
           </div>
         </div>
 
