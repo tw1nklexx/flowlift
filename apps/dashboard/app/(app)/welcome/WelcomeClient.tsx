@@ -12,12 +12,9 @@ export default function WelcomeClient({ apiKey }: Props) {
   const [bannerVisible, setBannerVisible] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
   const [copied, setCopied] = useState<"key" | "snippet" | null>(null);
-  const [snippetSrc, setSnippetSrc] = useState("https://your-app.com/snippet");
   const [installTab, setInstallTab] = useState<"simple" | "advanced">("simple");
 
   useEffect(() => {
-    setSnippetSrc(`${window.location.origin}/snippet`);
-
     try {
       const saved = localStorage.getItem("fl_onboarding");
       if (saved) {
@@ -50,8 +47,26 @@ export default function WelcomeClient({ apiKey }: Props) {
     setTimeout(() => setCopied(null), 2000);
   }
 
-  const simpleCode = `<script src="${snippetSrc}" async></script>\n<script>FlowLift.init("${apiKey}")</script>`;
-  const advancedCode = `<script src="${snippetSrc}" async></script>\n<script>\n  FlowLift.init("${apiKey}");\n  FlowLift.identify({ id: user.id, plan: user.plan });\n</script>`;
+  const simpleCode =
+    `<!-- Add before closing </body> tag in your HTML -->\n` +
+    `<script src="https://your-domain.com/snippet" async></script>\n` +
+    `<script>\n` +
+    `  FlowLift.init("${apiKey}"); // ← copied from your Settings page\n` +
+    `</script>`;
+
+  const advancedCode =
+    `<!-- Add before closing </body> tag -->\n` +
+    `<script src="https://your-domain.com/snippet" async></script>\n` +
+    `<script>\n` +
+    `  FlowLift.init("${apiKey}");\n` +
+    `\n` +
+    `  // Call this after your user logs in:\n` +
+    `  FlowLift.identify({\n` +
+    `    id: user.id,        // required: your user's unique ID\n` +
+    `    plan: user.plan,    // "free" | "pro" — for plan-based targeting\n` +
+    `  });\n` +
+    `</script>`;
+
   const installCode = installTab === "simple" ? simpleCode : advancedCode;
 
   return (
@@ -169,11 +184,21 @@ export default function WelcomeClient({ apiKey }: Props) {
                 </div>
               </div>
 
-              <p className="mt-2 text-xs text-gray-400">
-                {installTab === "simple"
-                  ? "That's it. No identify() needed to get started."
-                  : "Add this after your user logs in for smarter targeting."}
-              </p>
+              {installTab === "simple" ? (
+                <div className="mt-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 text-xs text-blue-800 leading-relaxed">
+                  📌 <strong>Where to add this:</strong> In your app&apos;s main HTML file (e.g.{" "}
+                  <code className="bg-blue-100 px-1 rounded">index.html</code>,{" "}
+                  <code className="bg-blue-100 px-1 rounded">_document.tsx</code>), just before
+                  the closing <code className="bg-blue-100 px-1 rounded">&lt;/body&gt;</code> tag.
+                  Your developer does this once — you manage everything else from the dashboard.
+                </div>
+              ) : (
+                <div className="mt-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 text-xs text-blue-800 leading-relaxed">
+                  💡 <strong>When to use identify():</strong> Call it right after your user
+                  authenticates. Enables targeting by plan, role, or user properties. Without it,
+                  FlowLift still works but targets all users equally.
+                </div>
+              )}
 
               {!step2Done && (
                 <button

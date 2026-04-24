@@ -36,10 +36,7 @@ export default async function SettingsPage() {
           Add this before the closing <code>&lt;/body&gt;</code> tag.
         </p>
         {project && (
-          <InstallTabs
-            apiKey={project.api_key}
-            snippetUrl={`${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/snippet`}
-          />
+          <InstallTabs apiKey={project.api_key} />
         )}
       </section>
 

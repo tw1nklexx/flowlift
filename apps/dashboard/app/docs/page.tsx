@@ -1,13 +1,12 @@
 import Link from "next/link";
 import CopyButton from "./CopyButton";
 
-const SNIPPET_URL = process.env.NEXT_PUBLIC_APP_URL
-  ? `${process.env.NEXT_PUBLIC_APP_URL}/snippet`
-  : "https://your-app.com/snippet";
-
 const INSTALL_CODE =
-  `<script src="${SNIPPET_URL}" async></script>\n` +
-  `<script>FlowLift.init("proj_xxxxxxxxxxxx");</script>`;
+  `<!-- Add before closing </body> tag in your HTML -->\n` +
+  `<script src="https://your-domain.com/snippet" async></script>\n` +
+  `<script>\n` +
+  `  FlowLift.init("proj_xxxxxxxxxxxx"); // ← copied from your Settings page\n` +
+  `</script>`;
 
 const IDENTIFY_CODE =
   `FlowLift.identify({\n` +
@@ -92,6 +91,13 @@ export default function DocsPage() {
                 <Mono>proj_xxxxxxxxxxxx</Mono>{" "}
                 with your project key from the{" "}
                 <Link href="/settings" className="text-[#4f6ef7] hover:underline">Settings page</Link>.
+                It&apos;s pre-filled there — just copy and paste.
+              </p>
+              <p className="text-sm text-gray-500 mb-4">
+                Replace <Mono>your-domain.com</Mono> with your app&apos;s domain once you&apos;ve set
+                up a custom domain, or use the FlowLift CDN URL from your{" "}
+                <Link href="/settings" className="text-[#4f6ef7] hover:underline">Settings page</Link>{" "}
+                during development.
               </p>
               <Tip className="mb-8">
                 Works immediately, no configuration needed. FlowLift will show a demo flow
