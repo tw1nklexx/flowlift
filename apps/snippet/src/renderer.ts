@@ -53,9 +53,11 @@ interface RenderContext {
   currentIndex: number;
   onComplete: () => void;
   onDismiss: () => void;
+  hideWatermark?: boolean;
 }
 
 let overlay: HTMLElement | null = null;
+let watermark: HTMLElement | null = null;
 
 const STYLES = `
   .fl-reset { all: initial; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; box-sizing: border-box; }
@@ -81,6 +83,8 @@ const STYLES = `
   .fl-anim-fade { animation: fl-fade 300ms ease forwards; }
   .fl-anim-slide { animation: fl-slide 300ms ease forwards; }
   .fl-anim-bounce { animation: fl-bounce 400ms ease forwards; }
+  .fl-watermark { position: fixed; bottom: 16px; right: 16px; display: inline-flex; align-items: center; background: white; border: 1px solid #e5e7eb; border-radius: 20px; padding: 4px 10px; font-size: 11px; color: #6b7280; box-shadow: 0 1px 4px rgba(0,0,0,0.1); z-index: 2147483645; text-decoration: none; cursor: pointer; }
+  .fl-watermark:hover { opacity: 0.8; }
 `;
 
 function injectStyles(): void {
@@ -89,6 +93,25 @@ function injectStyles(): void {
   style.id = "fl-styles";
   style.textContent = STYLES;
   document.head.appendChild(style);
+}
+
+function injectWatermark(_hide?: boolean): void {
+  if (document.getElementById("fl-watermark")) return;
+  const badge = makeEl("a", "fl-watermark");
+  badge.id = "fl-watermark";
+  (badge as HTMLAnchorElement).href = "https://flowlift.io";
+  (badge as HTMLAnchorElement).target = "_blank";
+  (badge as HTMLAnchorElement).rel = "noopener noreferrer";
+  badge.textContent = "⚡ Powered by FlowLift";
+  document.body.appendChild(badge);
+  watermark = badge;
+}
+
+export function removeWatermark(): void {
+  if (watermark) {
+    watermark.remove();
+    watermark = null;
+  }
 }
 
 function makeEl<K extends keyof HTMLElementTagNameMap>(
@@ -105,6 +128,7 @@ function makeEl<K extends keyof HTMLElementTagNameMap>(
 export function renderStep(ctx: RenderContext): void {
   cleanup();
   injectStyles();
+  injectWatermark(ctx.hideWatermark);
 
   const { steps, currentIndex, flowId, sessionId } = ctx;
   const step = steps[currentIndex];
@@ -131,12 +155,14 @@ export function renderStep(ctx: RenderContext): void {
 
   function complete() {
     track({ flow_id: flowId, session_id: sessionId, event_type: "flow_completed" });
+    removeWatermark();
     cleanup();
     ctx.onComplete();
   }
 
   function dismiss() {
     track({ flow_id: flowId, session_id: sessionId, event_type: "flow_dismissed" });
+    removeWatermark();
     cleanup();
     ctx.onDismiss();
   }

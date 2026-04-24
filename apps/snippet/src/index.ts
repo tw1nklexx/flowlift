@@ -1,9 +1,10 @@
 import { matchesRules, type UserProps } from "./engine";
 import { initTracker, track } from "./tracker";
-import { renderStep, cleanup } from "./renderer";
+import { renderStep, cleanup, removeWatermark } from "./renderer";
 
 interface InitOptions {
   apiUrl?: string;
+  hideWatermark?: boolean;
 }
 
 interface FlowData {
@@ -19,6 +20,7 @@ let _userProps: UserProps | null = null;
 let _sessionId = "";
 let _initialized = false;
 let _runId = 0; // incremented on each fetchAndRun call to cancel stale fetches
+let _hideWatermark = false;
 
 function getSessionId(): string {
   const key = "fl_sid";
@@ -81,6 +83,7 @@ async function fetchAndRun(userProps: UserProps): Promise<void> {
       currentIndex: 0,
       onComplete: () => {},
       onDismiss: () => {},
+      hideWatermark: _hideWatermark,
     });
 
     break; // show one flow at a time
@@ -92,6 +95,7 @@ export function init(apiKey: string, options: InitOptions = {}): void {
   _initialized = true;
   _apiKey = apiKey;
   _apiUrl = options.apiUrl ?? "https://zesemjcbilrvtgucrazd.supabase.co/functions/v1";
+  _hideWatermark = options.hideWatermark ?? false;
   _sessionId = getSessionId();
   initTracker(apiKey, _apiUrl);
 
@@ -121,6 +125,7 @@ export function identify(userProps: UserProps): void {
     const merged: UserProps = { session_count: visitCount, ...userProps };
 
     // Cancel any currently showing flow, then re-evaluate with real identity
+    removeWatermark();
     cleanup();
     fetchAndRun(merged);
   }
