@@ -18,7 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <nav className="flex-1 px-3 py-4 space-y-1">
           <GettingStartedLink />
           <NavItem href="/flows" label="Flows" icon="⚡" />
-          <NavItem href="/analytics" label="Analytics" icon="📊" />
+          <NavItem href="/stats" label="Stats" icon="📊" />
           <NavItem href="/settings" label="Settings" icon="⚙️" />
         </nav>
         <div className="px-4 py-4 border-t border-gray-200">
