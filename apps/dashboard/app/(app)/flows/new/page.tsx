@@ -8,11 +8,11 @@ export default async function NewFlowPage() {
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id")
+    .select("id, api_key")
     .eq("user_id", user!.id)
     .single();
 
   if (!project) redirect("/settings");
 
-  return <FlowBuilder projectId={project.id} />;
+  return <FlowBuilder projectId={project.id} apiKey={project.api_key} />;
 }

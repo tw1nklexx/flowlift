@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TEMPLATES } from "@/lib/templates";
 import type { Flow, Project } from "@/types";
+import FlowsGuide from "./FlowsGuide";
 
 export default async function FlowsPage() {
   const supabase = createClient();
@@ -62,14 +63,28 @@ export default async function FlowsPage() {
         </Link>
       </div>
 
+      {/* First-time hero card */}
+      {(!flows || flows.length === 0) && (
+        <div className="mb-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl px-8 py-10 text-center text-white">
+          <p className="text-5xl mb-3 select-none">🚀</p>
+          <h2 className="text-xl font-bold mb-2">Create your first onboarding flow</h2>
+          <p className="text-sm text-blue-100 leading-relaxed max-w-sm mx-auto mb-5">
+            Pick a template below and launch in 2 minutes. Your users will see it the moment they visit your app.
+          </p>
+          <span className="text-2xl animate-bounce inline-block" aria-hidden="true">↓</span>
+        </div>
+      )}
+
       {/* Templates */}
       <section className="mb-10">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
           Start from a template
         </h2>
+        {(!flows || flows.length === 0) && <FlowsGuide />}
         <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {TEMPLATES.map((template) => (
+          {TEMPLATES.map((template, idx) => (
             <div
+              id={idx === 0 ? "first-template" : undefined}
               key={template.id}
               className="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 rounded-xl p-5 flex flex-col"
             >

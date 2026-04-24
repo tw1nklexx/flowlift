@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Flow, Step, StepType, TargetingRules, Condition, ConditionType } from "@/types";
@@ -9,6 +9,7 @@ import PreviewModal from "@/components/PreviewModal";
 interface Props {
   projectId: string;
   initialFlow?: Flow;
+  apiKey?: string;
 }
 
 const DEFAULT_STEP: Record<StepType, Step> = {
@@ -34,7 +35,7 @@ const DEFAULT_STEP: Record<StepType, Step> = {
   },
 };
 
-export default function FlowBuilder({ projectId, initialFlow }: Props) {
+export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
   const router = useRouter();
   const [name, setName] = useState(initialFlow?.name ?? "Untitled Flow");
   const [steps, setSteps] = useState<Step[]>(initialFlow?.steps ?? []);
@@ -44,6 +45,7 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
   );
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [published, setPublished] = useState(false);
   const [activeTab, setActiveTab] = useState<"content" | "design" | "targeting">("content");
   const [previewing, setPreviewing] = useState(false);
 
@@ -101,6 +103,15 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
     router.refresh();
   }
 
+  useEffect(() => {
+    if (!published) return;
+    const t = setTimeout(() => {
+      router.push("/flows");
+      router.refresh();
+    }, 5000);
+    return () => clearTimeout(t);
+  }, [published, router]);
+
   async function save(publish: boolean) {
     setSaving(true);
     const supabase = createClient();
@@ -118,8 +129,13 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
       await supabase.from("flows").insert(payload);
     }
     setSaving(false);
-    router.push("/flows");
-    router.refresh();
+
+    if (publish) {
+      setPublished(true);
+    } else {
+      router.push("/flows");
+      router.refresh();
+    }
   }
 
   return (
@@ -179,6 +195,41 @@ export default function FlowBuilder({ projectId, initialFlow }: Props) {
           flowName={name}
           onClose={() => setPreviewing(false)}
         />
+      )}
+
+      {published && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center shadow-2xl">
+            <p className="text-5xl mb-3 select-none">🎉</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Flow published!</h2>
+            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+              Your users will now see this flow when they visit your app.
+            </p>
+            {apiKey && (
+              <>
+                <div className="bg-gray-900 rounded-xl px-5 py-3.5 text-left mb-2">
+                  <pre className="text-emerald-400 text-xs font-mono">{`FlowLift.init("${apiKey}");`}</pre>
+                </div>
+                <p className="text-xs text-gray-400 mb-6">Make sure this is installed in your app</p>
+              </>
+            )}
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => { router.push("/flows"); router.refresh(); }}
+                className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Back to flows
+              </button>
+              <button
+                onClick={() => router.push("/flows/new")}
+                className="px-4 py-2 text-sm bg-[#4f6ef7] text-white rounded-lg hover:bg-[#3b5af5] transition-colors"
+              >
+                Create another
+              </button>
+            </div>
+            <p className="text-xs text-gray-300 mt-4">Redirecting in 5 seconds…</p>
+          </div>
+        </div>
       )}
 
       {/* 3-column body */}

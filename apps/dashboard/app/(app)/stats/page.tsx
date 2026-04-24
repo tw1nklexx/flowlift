@@ -78,6 +78,7 @@ export default async function StatsPage() {
     .sort((a, b) => b.shown - a.shown);
 
   const hasData = impressions > 0;
+  const hasActiveFlow = (flows ?? []).some((f) => f.is_active);
 
   return (
     <div className="p-8 max-w-3xl">
@@ -90,12 +91,27 @@ export default async function StatsPage() {
       </div>
 
       {!hasData ? (
-        <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
-          <p className="text-4xl mb-4">📊</p>
-          <p className="text-base font-semibold text-gray-900 mb-2">No data yet</p>
-          <p className="text-sm text-gray-500 max-w-xs mx-auto">
-            Publish a flow and share your app with users to start seeing stats here.
+        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+          <p className="text-sm font-semibold text-gray-700 mb-6">
+            Here&apos;s what you need to start seeing data:
           </p>
+          <div className="space-y-4">
+            <SetupStep done label="Account created" />
+            <SetupStep
+              done={hasActiveFlow}
+              label={hasActiveFlow ? "Flow published" : "Publish a flow"}
+              hint={!hasActiveFlow ? "You need at least one active flow for users to see." : undefined}
+              href={!hasActiveFlow ? "/flows" : undefined}
+              hrefLabel="Go to Flows →"
+            />
+            <SetupStep
+              done={false}
+              label="Install the snippet in your app"
+              hint="Paste the snippet into your app's HTML so FlowLift can track events."
+              href="/settings"
+              hrefLabel="Go to Settings →"
+            />
+          </div>
         </div>
       ) : (
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -168,6 +184,46 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
     <div className="bg-white border border-gray-200 rounded-xl p-5">
       <p className="text-sm text-gray-500 mb-1">{label}</p>
       <p className="text-2xl font-bold text-gray-900">{value}</p>
+    </div>
+  );
+}
+
+function SetupStep({
+  done,
+  label,
+  hint,
+  href,
+  hrefLabel,
+}: {
+  done: boolean;
+  label: string;
+  hint?: string;
+  href?: string;
+  hrefLabel?: string;
+}) {
+  return (
+    <div className="flex items-start gap-4">
+      <div
+        className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
+          done ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
+        }`}
+      >
+        {done ? "✓" : ""}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm font-medium ${done ? "text-gray-400 line-through" : "text-gray-900"}`}>
+          {label}
+        </p>
+        {hint && <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">{hint}</p>}
+        {href && hrefLabel && (
+          <Link
+            href={href}
+            className="inline-flex items-center mt-1.5 text-xs font-semibold text-[#4f6ef7] hover:underline"
+          >
+            {hrefLabel}
+          </Link>
+        )}
+      </div>
     </div>
   );
 }
