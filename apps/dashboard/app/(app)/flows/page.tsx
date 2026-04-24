@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { TEMPLATES } from "@/lib/templates";
 import type { Flow, Project } from "@/types";
 import FlowsGuide from "./FlowsGuide";
+import FlowsHeader from "./FlowsHeader";
 
 export default async function FlowsPage() {
   const supabase = createClient();
@@ -11,7 +12,7 @@ export default async function FlowsPage() {
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id")
+    .select("id, api_key")
     .eq("user_id", user!.id)
     .single<Project>();
 
@@ -48,20 +49,24 @@ export default async function FlowsPage() {
   return (
     <div className="p-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Flows</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Build guided experiences for your users
-          </p>
+      {project ? (
+        <FlowsHeader projectId={project.id} />
+      ) : (
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Flows</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Build guided experiences for your users
+            </p>
+          </div>
+          <Link
+            href="/flows/new"
+            className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
+          >
+            + New Flow
+          </Link>
         </div>
-        <Link
-          href="/flows/new"
-          className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
-        >
-          + New Flow
-        </Link>
-      </div>
+      )}
 
       {/* First-time hero card */}
       {(!flows || flows.length === 0) && (
