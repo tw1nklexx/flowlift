@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { PartyPopper, TrendingUp, Sparkles, Undo2 } from "lucide-react";
+import { PartyPopper, TrendingUp, Sparkles, Undo2, HelpCircle } from "lucide-react";
 import type { Flow, Step, StepType, TargetingRules, Condition, ConditionType } from "@/types";
 import PreviewModal from "@/components/PreviewModal";
+import { GuidedTour, TOUR_STORAGE_KEY } from "@/components/GuidedTour";
 
 interface Props {
   projectId: string;
@@ -50,6 +51,11 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
   const [countdown, setCountdown] = useState(6);
   const [activeTab, setActiveTab] = useState<"content" | "design" | "targeting">("content");
   const [previewing, setPreviewing] = useState(false);
+  const [showTour, setShowTour] = useState(false);
+
+  useEffect(() => {
+    if (!localStorage.getItem(TOUR_STORAGE_KEY)) setShowTour(true);
+  }, []);
 
   const selectedStep = selectedIdx !== null ? steps[selectedIdx] : null;
 
@@ -172,6 +178,14 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
             </button>
           )}
           <button
+            onClick={() => setShowTour(true)}
+            className="p-1.5 text-gray-400 hover:text-gray-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+            title="How to use the builder"
+            aria-label="Open builder walkthrough"
+          >
+            <HelpCircle size={16} />
+          </button>
+          <button
             onClick={() => save(false)}
             disabled={saving || deleting}
             className="px-4 py-1.5 text-sm border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50 transition-colors"
@@ -186,6 +200,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
             <span className="text-[10px]">▶</span> Preview
           </button>
           <button
+            data-tour="publish-btn"
             onClick={() => save(true)}
             disabled={saving || deleting || steps.length === 0}
             className="px-4 py-1.5 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-700 disabled:opacity-50 transition-colors"
@@ -202,6 +217,8 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
           onClose={() => setPreviewing(false)}
         />
       )}
+
+      {showTour && <GuidedTour onClose={() => setShowTour(false)} />}
 
       {published && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -274,7 +291,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
       {/* 3-column body */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Step list */}
-        <div className="w-56 bg-white border-r border-gray-200 flex flex-col">
+        <div data-tour="steps" className="w-56 bg-white border-r border-gray-200 flex flex-col">
           <div className="px-4 py-3 border-b border-gray-100">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Steps</p>
           </div>
@@ -326,7 +343,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
         </div>
 
         {/* Center: Preview */}
-        <div className="flex-1 flex items-center justify-center bg-gray-100 p-8">
+        <div data-tour="preview" className="flex-1 flex items-center justify-center bg-gray-100 p-8">
           {selectedStep ? (
             <StepPreview step={selectedStep} />
           ) : (
@@ -345,6 +362,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
               return (
                 <button
                   key={tab}
+                  data-tour={`tab-${tab}`}
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 py-3 text-xs font-medium transition-colors ${
                     activeTab === tab
@@ -617,12 +635,17 @@ function ContentPanel({
 
       {step.type === "tooltip" && (
         <Field label="Target selector">
-          <input
-            value={step.target_selector ?? ""}
-            onChange={(e) => onChange({ target_selector: e.target.value })}
-            className={inputCls}
-            placeholder="#element-id or .class-name"
-          />
+          <>
+            <input
+              value={step.target_selector ?? ""}
+              onChange={(e) => onChange({ target_selector: e.target.value })}
+              className={inputCls}
+              placeholder="#element-id or .class-name"
+            />
+            <p className="text-[11px] text-gray-400 mt-1.5 leading-relaxed">
+              Paste the CSS selector of the element to highlight. Right-click in Chrome → Inspect → copy the id or class.
+            </p>
+          </>
         </Field>
       )}
 
