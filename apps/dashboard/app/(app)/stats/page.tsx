@@ -237,7 +237,7 @@ export default async function StatsPage() {
             <SetupStep
               done={false}
               label="Install the snippet in your app"
-              hint="Paste the snippet into your app's HTML so FlowLift can track events."
+              hint="Paste the snippet into your app's HTML so Nudgify can track events."
               href="/settings"
               hrefLabel="Go to Settings →"
             />

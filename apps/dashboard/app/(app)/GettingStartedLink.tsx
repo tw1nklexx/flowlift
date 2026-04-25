@@ -8,7 +8,7 @@ export default function GettingStartedLink() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("fl_onboarding");
+      const saved = localStorage.getItem("ng_onboarding");
       const { step2Done } = saved ? JSON.parse(saved) : {};
       setDone(!!step2Done);
     } catch {

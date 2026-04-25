@@ -5,11 +5,11 @@ const INSTALL_CODE =
   `<!-- Add before closing </body> tag in your HTML -->\n` +
   `<script src="https://your-domain.com/snippet" async></script>\n` +
   `<script>\n` +
-  `  FlowLift.init("proj_xxxxxxxxxxxx"); // ← copied from your Settings page\n` +
+  `  Nudgify.init("proj_xxxxxxxxxxxx"); // ← copied from your Settings page\n` +
   `</script>`;
 
 const IDENTIFY_CODE =
-  `FlowLift.identify({\n` +
+  `Nudgify.identify({\n` +
   `  id: "user_123",        // your user's unique ID\n` +
   `  plan: "free",          // "free" | "pro"\n` +
   `  session_count: 3,      // how many times they've logged in\n` +
@@ -21,7 +21,7 @@ const SELECTOR_CODE =
   `.nav-menu             // by CSS class\n` +
   `[data-id="feature"]   // by data attribute`;
 
-const RESET_CODE = `FlowLift.reset();`;
+const RESET_CODE = `Nudgify.reset();`;
 
 export default function DocsPage() {
   return (
@@ -67,7 +67,7 @@ export default function DocsPage() {
                 Documentation
               </span>
               <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-3">
-                FlowLift Docs
+                Nudgify Docs
               </h1>
               <p className="text-lg text-gray-500 leading-relaxed">
                 Install, configure, and understand your onboarding flows.
@@ -95,12 +95,12 @@ export default function DocsPage() {
               </p>
               <p className="text-sm text-gray-500 mb-4">
                 Replace <Mono>your-domain.com</Mono> with your app&apos;s domain once you&apos;ve set
-                up a custom domain, or use the FlowLift CDN URL from your{" "}
+                up a custom domain, or use the Nudgify CDN URL from your{" "}
                 <Link href="/settings" className="text-[#4f6ef7] hover:underline">Settings page</Link>{" "}
                 during development.
               </p>
               <Tip className="mb-8">
-                Works immediately, no configuration needed. FlowLift will show a demo flow
+                Works immediately, no configuration needed. Nudgify will show a demo flow
                 so you can confirm it&apos;s installed correctly.
               </Tip>
 
@@ -113,7 +113,7 @@ export default function DocsPage() {
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-4 leading-relaxed">
-                  Call <Mono>FlowLift.identify()</Mono> after your user logs in to unlock
+                  Call <Mono>Nudgify.identify()</Mono> after your user logs in to unlock
                   plan-based and session-based targeting rules.
                 </p>
                 <CodeBlock code={IDENTIFY_CODE} />
@@ -159,7 +159,7 @@ export default function DocsPage() {
                 </div>
 
                 <Tip className="mt-5">
-                  <strong>Tip:</strong> Call <Mono blue>identify()</Mono> every session — FlowLift
+                  <strong>Tip:</strong> Call <Mono blue>identify()</Mono> every session — Nudgify
                   always uses the latest values for targeting. It&apos;s fine to call{" "}
                   <Mono blue>init()</Mono> before the user is known; just follow it with{" "}
                   <Mono blue>identify()</Mono> as soon as you have their data.
@@ -295,7 +295,7 @@ export default function DocsPage() {
               <SectionHeader
                 id="analytics"
                 title="Understanding your data"
-                subtitle="FlowLift tracks user interactions automatically. No extra code needed beyond the initial install."
+                subtitle="Nudgify tracks user interactions automatically. No extra code needed beyond the initial install."
               />
 
               <div className="grid sm:grid-cols-3 gap-4 mb-8">
@@ -358,7 +358,7 @@ export default function DocsPage() {
               <SectionHeader
                 id="faq"
                 title="FAQ"
-                subtitle="Common questions about FlowLift."
+                subtitle="Common questions about Nudgify."
               />
 
               <div className="space-y-7">
@@ -368,11 +368,11 @@ export default function DocsPage() {
                 />
                 <FaqItem
                   q="Does it work with React / Vue / Angular?"
-                  a="Yes — FlowLift is plain JavaScript with no framework dependencies. It injects lightweight DOM elements directly, so it works inside any framework or plain HTML app."
+                  a="Yes — Nudgify is plain JavaScript with no framework dependencies. It injects lightweight DOM elements directly, so it works inside any framework or plain HTML app."
                 />
                 <FaqItem
                   q="What happens if a user has an ad blocker?"
-                  a="Unlike tools that load from a third-party CDN, FlowLift's snippet is served from your own domain. Ad blockers target known third-party domains, so your flows are unaffected."
+                  a="Unlike tools that load from a third-party CDN, Nudgify's snippet is served from your own domain. Ad blockers target known third-party domains, so your flows are unaffected."
                 />
                 <FaqItem
                   q="Can I show a flow multiple times?"
@@ -419,7 +419,7 @@ function Nav() {
     <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-[#4f6ef7]">
-          FlowLift
+          Nudgify
         </Link>
         <nav className="flex items-center gap-6">
           <Link

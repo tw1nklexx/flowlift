@@ -1,5 +1,5 @@
 {
-  "name": "flowlift",
+  "name": "nudgify",
   "private": true,
   "scripts": {
     "dev": "pnpm --filter dashboard dev",

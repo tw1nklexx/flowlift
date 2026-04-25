@@ -160,7 +160,7 @@ export default function PricingSection() {
                   {plan.watermark && (
                     <li className={`flex items-start gap-2 text-sm ${isPopular ? "text-blue-200" : "text-gray-400"}`}>
                       <span className="mt-0.5 w-[15px] shrink-0 text-center text-xs">–</span>
-                      <span>FlowLift watermark</span>
+                      <span>Nudgify watermark</span>
                     </li>
                   )}
                 </ul>

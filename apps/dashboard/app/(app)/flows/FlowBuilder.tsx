@@ -235,7 +235,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
               {apiKey && !initialFlow?.id && (
                 <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 text-left">
                   <div className="bg-gray-900 rounded-lg px-4 py-2.5 mb-2">
-                    <pre className="text-emerald-400 text-xs font-mono overflow-x-auto">{`FlowLift.init("${apiKey}");`}</pre>
+                    <pre className="text-emerald-400 text-xs font-mono overflow-x-auto">{`Nudgify.init("${apiKey}");`}</pre>
                   </div>
                   <p className="text-xs text-blue-700">
                     Make sure the snippet is installed →{" "}

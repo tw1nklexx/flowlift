@@ -17,7 +17,7 @@ export default function WelcomeClient({ apiKey }: Props) {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("fl_onboarding");
+      const saved = localStorage.getItem("ng_onboarding");
       if (saved) {
         const { step2Done: done } = JSON.parse(saved);
         if (done) setStep2Done(true);
@@ -31,7 +31,7 @@ export default function WelcomeClient({ apiKey }: Props) {
   function completeStep2() {
     setStep2Done(true);
     try {
-      localStorage.setItem("fl_onboarding", JSON.stringify({ step2Done: true }));
+      localStorage.setItem("ng_onboarding", JSON.stringify({ step2Done: true }));
     } catch {}
   }
 
@@ -52,17 +52,17 @@ export default function WelcomeClient({ apiKey }: Props) {
     `<!-- Add before closing </body> tag in your HTML -->\n` +
     `<script src="https://your-domain.com/snippet" async></script>\n` +
     `<script>\n` +
-    `  FlowLift.init("${apiKey}"); // ← copied from your Settings page\n` +
+    `  Nudgify.init("${apiKey}"); // ← copied from your Settings page\n` +
     `</script>`;
 
   const advancedCode =
     `<!-- Add before closing </body> tag -->\n` +
     `<script src="https://your-domain.com/snippet" async></script>\n` +
     `<script>\n` +
-    `  FlowLift.init("${apiKey}");\n` +
+    `  Nudgify.init("${apiKey}");\n` +
     `\n` +
     `  // Call this after your user logs in:\n` +
-    `  FlowLift.identify({\n` +
+    `  Nudgify.identify({\n` +
     `    id: user.id,        // required: your user's unique ID\n` +
     `    plan: user.plan,    // "free" | "pro" — for plan-based targeting\n` +
     `  });\n` +
@@ -109,7 +109,7 @@ export default function WelcomeClient({ apiKey }: Props) {
             className="flex items-center justify-between mb-10"
             style={{ animation: "fl-rise 350ms ease both" }}
           >
-            <span className="text-lg font-bold text-[#4f6ef7]">FlowLift</span>
+            <span className="text-lg font-bold text-[#4f6ef7]">Nudgify</span>
             <Link href="/flows" className="text-sm text-gray-400 hover:text-gray-600 transition-colors">
               Skip for now →
             </Link>
@@ -198,7 +198,7 @@ export default function WelcomeClient({ apiKey }: Props) {
                 <div className="mt-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 text-xs text-blue-800 leading-relaxed">
                   <Lightbulb size={13} className="inline-block mr-1 text-blue-500" aria-hidden="true" /><strong>When to use identify():</strong> Call it right after your user
                   authenticates. Enables targeting by plan, role, or user properties. Without it,
-                  FlowLift still works but targets all users equally.
+                  Nudgify still works but targets all users equally.
                 </div>
               )}
 

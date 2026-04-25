@@ -41,7 +41,7 @@ function GettingStartedNavItem() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem("fl_onboarding");
+      const saved = localStorage.getItem("ng_onboarding");
       const { step2Done } = saved ? JSON.parse(saved) : {};
       setDone(!!step2Done);
     } catch {
@@ -78,7 +78,7 @@ export default function Sidebar({ email, logoutButton }: SidebarProps) {
   return (
     <aside className="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0">
       <div className="px-5 py-5 border-b border-gray-200">
-        <span className="text-lg font-bold text-brand-600">FlowLift</span>
+        <span className="text-lg font-bold text-brand-600">Nudgify</span>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-0.5" aria-label="Main navigation">
         <GettingStartedNavItem />

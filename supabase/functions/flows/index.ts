@@ -8,10 +8,10 @@ const DEMO_FLOW = {
   steps: [
     {
       type: "banner",
-      body: "👋 FlowLift is working! This is a demo flow — create your own in the dashboard.",
+      body: "👋 Nudgify is working! This is a demo flow — create your own in the dashboard.",
       cta_label: "Open dashboard",
       cta_action: "link",
-      cta_url: "https://flowlift-dashboard-al1ydr19w-tw1nklexxs-projects.vercel.app",
+      cta_url: "https://nudgify.io",
       bgColor: "#4f6ef7",
       btnColor: "#ffffff",
       btnTextColor: "#4f6ef7",

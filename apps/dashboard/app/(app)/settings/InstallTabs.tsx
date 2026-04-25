@@ -15,17 +15,17 @@ export default function InstallTabs({ apiKey }: Props) {
     `<!-- Add before closing </body> tag in your HTML -->\n` +
     `<script src="https://your-domain.com/snippet" async></script>\n` +
     `<script>\n` +
-    `  FlowLift.init("${apiKey}"); // ← copied from your Settings page\n` +
+    `  Nudgify.init("${apiKey}"); // ← copied from your Settings page\n` +
     `</script>`;
 
   const advancedCode =
     `<!-- Add before closing </body> tag -->\n` +
     `<script src="https://your-domain.com/snippet" async></script>\n` +
     `<script>\n` +
-    `  FlowLift.init("${apiKey}");\n` +
+    `  Nudgify.init("${apiKey}");\n` +
     `\n` +
     `  // Call this after your user logs in:\n` +
-    `  FlowLift.identify({\n` +
+    `  Nudgify.identify({\n` +
     `    id: user.id,        // required: your user's unique ID\n` +
     `    plan: user.plan,    // "free" | "pro" — for plan-based targeting\n` +
     `  });\n` +
@@ -87,7 +87,7 @@ export default function InstallTabs({ apiKey }: Props) {
       ) : (
         <div className="mt-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 text-xs text-blue-800 leading-relaxed">
           <Lightbulb size={13} className="inline-block mr-1 text-blue-500 shrink-0" aria-hidden="true" /><strong>When to use identify():</strong> Call it right after your user authenticates.
-          Enables targeting by plan, role, or user properties. Without it, FlowLift still works
+          Enables targeting by plan, role, or user properties. Without it, Nudgify still works
           but targets all users equally.
         </div>
       )}

@@ -327,7 +327,7 @@ function ModalStep({ step, onNext, onDismiss }: StepRenderProps) {
           {step.cta_label}
         </button>
         <a
-          href="https://flowlift.io"
+          href="https://nudgify.io"
           target="_blank"
           rel="noopener noreferrer"
           style={{ position: "absolute", bottom: 10, right: 14, fontSize: 12, color: "rgba(107,114,128,0.9)", fontFamily: WM_FONT, textDecoration: "none", cursor: "pointer" }}
@@ -371,7 +371,7 @@ function BannerStep({ step, onNext, onDismiss }: StepRenderProps) {
         {step.cta_label}
       </button>
       <a
-        href="https://flowlift.io"
+        href="https://nudgify.io"
         target="_blank"
         rel="noopener noreferrer"
         style={{ fontSize: 12, color: isColorDark(bgColor) ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.5)", marginLeft: 12, whiteSpace: "nowrap", fontFamily: WM_FONT, flexShrink: 0, textDecoration: "none", cursor: "pointer" }}
@@ -431,7 +431,7 @@ function TooltipStep({ step, onNext }: { step: Step; onNext: () => void }) {
         {step.cta_label}
       </button>
       <a
-        href="https://flowlift.io"
+        href="https://nudgify.io"
         target="_blank"
         rel="noopener noreferrer"
         style={{ display: "block", fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 10, fontFamily: WM_FONT, textDecoration: "none", cursor: "pointer" }}

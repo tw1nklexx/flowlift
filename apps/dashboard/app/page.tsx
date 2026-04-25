@@ -38,7 +38,7 @@ function Nav() {
     <header className="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-[#4f6ef7]">
-          FlowLift
+          Nudgify
         </Link>
         <nav className="flex items-center gap-2">
           <a
@@ -140,13 +140,13 @@ function Hero() {
               <span className="text-yellow-300">{`"your-domain.com/snippet"`}</span>
               <span className="text-blue-400">{`></script>\n`}</span>
               <span className="text-blue-400">{`<script>\n`}</span>
-              <span className="text-white">{`  FlowLift`}</span>
+              <span className="text-white">{`  Nudgify`}</span>
               <span className="text-blue-400">{`.`}</span>
               <span className="text-green-300">{`init`}</span>
               <span className="text-white">{`(`}</span>
               <span className="text-yellow-300">{`"proj_xxxxxxxxxxxx"`}</span>
               <span className="text-white">{`);\n`}</span>
-              <span className="text-white">{`  FlowLift`}</span>
+              <span className="text-white">{`  Nudgify`}</span>
               <span className="text-blue-400">{`.`}</span>
               <span className="text-green-300">{`identify`}</span>
               <span className="text-white">{`({ plan: user.plan });\n`}</span>
@@ -226,7 +226,7 @@ function BeforeAfter() {
               <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
                 <span className="w-2 h-2 rounded-full bg-red-400" />
               </span>
-              <h3 className="font-bold text-red-900">Without FlowLift</h3>
+              <h3 className="font-bold text-red-900">Without Nudgify</h3>
             </div>
             <ul className="space-y-3.5">
               {withoutItems.map((item, i) => (
@@ -246,7 +246,7 @@ function BeforeAfter() {
               <span className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
               </span>
-              <h3 className="font-bold text-emerald-900">With FlowLift</h3>
+              <h3 className="font-bold text-emerald-900">With Nudgify</h3>
             </div>
             <ul className="space-y-3.5">
               {withItems.map((item, i) => (
@@ -363,7 +363,7 @@ function Footer() {
     <footer className="bg-gray-50 border-t border-gray-100 py-10 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
-          <span className="text-base font-bold text-[#4f6ef7]">FlowLift</span>
+          <span className="text-base font-bold text-[#4f6ef7]">Nudgify</span>
           <nav className="flex items-center gap-6">
             <Link href="/" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">
               Home
@@ -381,7 +381,7 @@ function Footer() {
         </div>
         <div className="border-t border-gray-200 pt-5 text-center sm:text-left">
           <p className="text-xs text-gray-400">
-            © 2026 FlowLift. Built for SaaS founders.
+            © 2026 Nudgify. Built for SaaS founders.
           </p>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SYSTEM_PROMPT = `You are an expert UX designer specializing in SaaS onboarding flows.
-Generate a FlowLift onboarding flow based on the user's description.
+Generate a Nudgify onboarding flow based on the user's description.
 Respond with ONLY valid JSON, no markdown, no explanation.
 
 The JSON must follow this exact schema:

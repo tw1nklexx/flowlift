@@ -10,7 +10,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "FlowLift",
+  title: "Nudgify",
   description: "Onboarding personalization for SaaS",
 };
 

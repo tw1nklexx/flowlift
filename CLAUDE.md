@@ -1,4 +1,4 @@
-# FlowLift — CLAUDE.md
+# Nudgify — CLAUDE.md
 
 ## What we're building
 A lightweight SaaS onboarding personalization tool. Cheaper, simpler Appcues alternative.
@@ -11,7 +11,7 @@ Target customer: early-stage SaaS founders who can't afford $300/mo.
 
 ## Commands
 - `pnpm dev` — starts dashboard on localhost:3000
-- `pnpm build:snippet` — bundles snippet to apps/snippet/dist/flowlift.min.js
+- `pnpm build:snippet` — bundles snippet to apps/snippet/dist/nudgify.min.js
 - `pnpm db:push` — pushes supabase migrations
 - `pnpm lint` — ESLint across all workspaces
 

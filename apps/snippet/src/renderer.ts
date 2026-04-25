@@ -215,7 +215,7 @@ function renderModal(
 
   if (!_hideWatermark) {
     const wm = document.createElement("a");
-    wm.href = "https://flowlift.io";
+    wm.href = "https://nudgify.io";
     wm.target = "_blank";
     wm.rel = "noopener noreferrer";
     wm.textContent = "✨ Add onboarding like this →";
@@ -260,7 +260,7 @@ function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): vo
     const wmColor = isColorDark(bgColor) ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.5)";
     const wmHover = isColorDark(bgColor) ? "rgba(255,255,255,1)" : "rgba(0,0,0,0.7)";
     const wm = document.createElement("a");
-    wm.href = "https://flowlift.io";
+    wm.href = "https://nudgify.io";
     wm.target = "_blank";
     wm.rel = "noopener noreferrer";
     wm.textContent = "✨ Add onboarding like this →";
@@ -308,7 +308,7 @@ function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): v
 
   if (!_hideWatermark) {
     const wm = document.createElement("a");
-    wm.href = "https://flowlift.io";
+    wm.href = "https://nudgify.io";
     wm.target = "_blank";
     wm.rel = "noopener noreferrer";
     wm.textContent = "✨ Add onboarding like this →";

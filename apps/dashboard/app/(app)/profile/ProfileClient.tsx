@@ -584,7 +584,7 @@ function NotificationsSection({
     {
       key: "tips" as const,
       label: "Tips and tutorials",
-      description: "Learn how to get more from FlowLift",
+      description: "Learn how to get more from Nudgify",
       disabled: false,
     },
     {

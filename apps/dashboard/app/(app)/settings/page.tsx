@@ -22,7 +22,7 @@ export default async function SettingsPage() {
       <section className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
         <h2 className="text-base font-semibold text-gray-900 mb-1">API Key</h2>
         <p className="text-sm text-gray-500 mb-4">
-          Use this key to initialize the FlowLift snippet.
+          Use this key to initialize the Nudgify snippet.
         </p>
         {project ? (
           <ApiKeyDisplay apiKey={project.api_key} />
