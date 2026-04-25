@@ -35,6 +35,13 @@ const STEPS: TourStep[] = [
     cta: "Got it →",
   },
   {
+    target: "new-flow-btn",
+    placement: "bottom",
+    title: "Build from scratch",
+    body: "Click '+ New Flow' to open the visual builder.\nAdd modals, tooltips, and banners — preview instantly, publish in one click.",
+    cta: "Got it →",
+  },
+  {
     target: "ai-btn",
     placement: "bottom",
     title: "Generate a flow with AI ✨",

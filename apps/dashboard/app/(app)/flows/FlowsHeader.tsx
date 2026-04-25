@@ -33,6 +33,7 @@ export default function FlowsHeader({ projectId }: Props) {
             <HelpCircle size={15} />
           </button>
           <Link
+            data-tour="new-flow-btn"
             href="/flows/new"
             className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
           >

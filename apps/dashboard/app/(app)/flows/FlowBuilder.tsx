@@ -52,6 +52,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
   const [activeTab, setActiveTab] = useState<"content" | "design" | "targeting">("content");
   const [previewing, setPreviewing] = useState(false);
   const [showTour, setShowTour] = useState(false);
+  const [editingName, setEditingName] = useState(false);
 
   useEffect(() => {
     if (!localStorage.getItem(TOUR_STORAGE_KEY)) setShowTour(true);
@@ -161,11 +162,24 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
           >
             ← Flows
           </button>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="text-lg font-semibold text-gray-900 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-brand-500 focus:outline-none px-1 transition-colors"
-          />
+          {editingName ? (
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => setEditingName(false)}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === "Escape") setEditingName(false); }}
+              autoFocus
+              className="text-lg font-semibold text-gray-900 bg-transparent border-b border-brand-500 focus:outline-none px-1 w-[200px] sm:w-[300px]"
+            />
+          ) : (
+            <button
+              onClick={() => setEditingName(true)}
+              title={name}
+              className="text-lg font-semibold text-gray-900 px-1 max-w-[200px] sm:max-w-[300px] truncate border-b border-transparent hover:border-gray-300 transition-colors text-left cursor-text"
+            >
+              {name}
+            </button>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {initialFlow?.id && (
