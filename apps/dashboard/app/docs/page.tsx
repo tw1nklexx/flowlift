@@ -1,5 +1,6 @@
 import Link from "next/link";
 import CopyButton from "./CopyButton";
+import SharedPublicLayout from "@/components/SharedPublicLayout";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nudgify.app";
 
@@ -27,10 +28,8 @@ const RESET_CODE = `Nudgify.reset();`;
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <Nav />
-
-      <div className="max-w-5xl mx-auto px-8 pt-14">
+    <SharedPublicLayout>
+      <div className="max-w-5xl mx-auto px-8 pt-20">
         <div className="flex gap-12">
 
           {/* ── Sidebar ── */}
@@ -410,34 +409,10 @@ export default function DocsPage() {
           </main>
         </div>
       </div>
-    </div>
+    </SharedPublicLayout>
   );
 }
 
-/* ── Shared nav ──────────────────────────────────────────────────────────── */
-
-function Nav() {
-  return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-[#4f6ef7]">
-          Nudgify
-        </Link>
-        <nav className="flex items-center gap-6">
-          <Link href="/compare" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors hidden sm:block">
-            Compare
-          </Link>
-          <Link href="/docs" className="text-sm font-medium text-[#4f6ef7]">
-            Docs
-          </Link>
-          <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-            Sign in
-          </Link>
-        </nav>
-      </div>
-    </header>
-  );
-}
 
 /* ── Layout helpers ──────────────────────────────────────────────────────── */
 

@@ -1,13 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useState } from "react";
 import {
   ArrowRight,
   Check,
   X,
-  Menu,
   Zap,
   Target,
   Paintbrush2,
@@ -22,106 +19,22 @@ import {
   CheckCircle2,
   Users,
 } from "lucide-react";
+import SharedPublicLayout from "@/components/SharedPublicLayout";
 import PricingSection from "./PricingSection";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white text-[#111827] antialiased">
-      <Nav />
+    <SharedPublicLayout>
       <Hero />
       <SocialProof />
       <Features />
       <BeforeAfter />
       <HowItWorks />
-      <ComparisonTable />
+      <ComparisonSection />
       <Testimonial />
       <PricingSection />
       <FinalCta />
-      <Footer />
-    </div>
-  );
-}
-
-/* ── Navigation ──────────────────────────────────────────────────────────── */
-
-function Nav() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
-          <Image src="/nudgify-logo.svg" alt="Nudgify" width={24} height={24} priority />
-          <span className="text-xl font-bold text-[#4f6ef7]">Nudgify</span>
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-0.5">
-          <Link href="#features" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50">
-            Features
-          </Link>
-          <Link href="#how-it-works" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50">
-            How it works
-          </Link>
-          <Link href="#pricing" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50">
-            Pricing
-          </Link>
-          <Link href="/compare" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50">
-            Compare
-          </Link>
-        </nav>
-
-        {/* Desktop CTAs */}
-        <div className="hidden md:flex items-center gap-2">
-          <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-2">
-            Sign in
-          </Link>
-          <Link
-            href="/signup"
-            className="text-sm font-semibold bg-[#4f6ef7] text-white px-5 py-2 rounded-full hover:bg-[#3b5af5] hover:scale-105 transition-all shadow-sm shadow-blue-200"
-          >
-            Start free
-          </Link>
-        </div>
-
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setOpen(!open)}
-          className="md:hidden p-2 text-gray-500 hover:text-gray-900 transition-colors rounded-lg"
-          aria-label={open ? "Close menu" : "Open menu"}
-        >
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden bg-white border-t border-gray-100 px-6 py-4 space-y-0.5">
-          {["Features", "How it works", "Pricing"].map((label) => (
-            <Link
-              key={label}
-              href={`#${label.toLowerCase().replace(" ", "-")}`}
-              onClick={() => setOpen(false)}
-              className="block text-sm font-medium text-gray-700 hover:text-gray-900 py-2.5 border-b border-gray-50"
-            >
-              {label}
-            </Link>
-          ))}
-          <Link href="/compare" onClick={() => setOpen(false)} className="block text-sm font-medium text-gray-700 hover:text-gray-900 py-2.5 border-b border-gray-50">
-            Compare
-          </Link>
-          <div className="pt-3 flex flex-col gap-2">
-            <Link href="/login" className="text-center text-sm font-medium text-gray-700 border border-gray-200 py-2.5 rounded-full hover:bg-gray-50 transition-colors">
-              Sign in
-            </Link>
-            <Link href="/signup" className="text-center text-sm font-semibold bg-[#4f6ef7] text-white py-2.5 rounded-full hover:bg-[#3b5af5] transition-colors">
-              Start free
-            </Link>
-          </div>
-        </div>
-      )}
-    </header>
+    </SharedPublicLayout>
   );
 }
 
@@ -129,132 +42,139 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center pt-14 pb-16 px-6 overflow-hidden">
+    <section className="relative min-h-screen flex items-center pt-14 px-6 pb-10 overflow-hidden">
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-brand-100/50 to-transparent rounded-full blur-3xl" />
+        <div className="absolute -top-32 left-1/4 w-[700px] h-[500px] bg-gradient-to-br from-brand-100/60 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-4xl mx-auto text-center">
-        {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-brand-50 text-[#4f6ef7] text-xs font-semibold px-3.5 py-1.5 rounded-full mb-8 border border-brand-100">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#4f6ef7] animate-pulse" />
-          In-app onboarding without the developer
-        </div>
+      <div className="relative max-w-6xl mx-auto w-full">
+        <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 items-center">
 
-        {/* Headline */}
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-[#111827] leading-[1.05] tracking-tight mb-6">
-          Turn signups into<br />
-          <span className="text-[#4f6ef7]">activated customers</span>
-        </h1>
-
-        {/* Subheadline */}
-        <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-4 leading-relaxed">
-          Add personalized onboarding flows to your SaaS in 10 minutes.
-          No developer changes needed after the initial setup.
-        </p>
-
-        {/* Power line */}
-        <p className="text-sm text-gray-400 mb-10">
-          Users who complete onboarding are{" "}
-          <strong className="text-[#4f6ef7] font-semibold">2–3× more likely</strong>{" "}
-          to become paying customers.
-        </p>
-
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-5">
-          <Link
-            href="/signup"
-            className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#4f6ef7] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-[#3b5af5] hover:scale-105 transition-all shadow-lg shadow-blue-200"
-          >
-            Start for free
-            <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-          <a
-            href="#how-it-works"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-gray-200 text-gray-600 px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-gray-50 hover:border-gray-300 transition-colors"
-          >
-            See how it works
-          </a>
-        </div>
-
-        {/* Micro-proof */}
-        <div className="flex items-center justify-center gap-2 text-xs text-gray-400 mb-16 flex-wrap">
-          <span className="flex items-center gap-1">
-            <Zap size={11} className="text-[#4f6ef7]" />
-            Free to start
-          </span>
-          <span className="text-gray-200">·</span>
-          <span>No credit card required</span>
-          <span className="text-gray-200">·</span>
-          <span>Setup in 10 minutes</span>
-        </div>
-
-        {/* Browser mockup */}
-        <div className="relative max-w-2xl mx-auto">
-          {/* Glow behind mockup */}
-          <div className="absolute -inset-8 bg-gradient-to-r from-brand-300/25 via-purple-300/15 to-brand-300/25 rounded-[40px] blur-2xl" />
-
-          <div className="relative bg-[#0f0f13] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/5">
-            {/* Title bar */}
-            <div className="flex items-center gap-1.5 px-4 py-3 bg-gray-900/80 border-b border-white/5">
-              <span className="w-3 h-3 rounded-full bg-red-400/70" />
-              <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
-              <span className="w-3 h-3 rounded-full bg-green-400/70" />
-              <div className="flex-1 flex justify-center">
-                <span className="text-xs text-gray-500 font-mono bg-white/5 px-4 py-0.5 rounded-md">
-                  app.yourproduct.com
-                </span>
-              </div>
+          {/* ── Left: text ── */}
+          <div className="text-center lg:text-left pt-16 lg:pt-0">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-brand-50 text-[#4f6ef7] text-xs font-semibold px-3.5 py-1.5 rounded-full mb-8 border border-brand-100">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4f6ef7] animate-pulse" />
+              In-app onboarding without the developer
             </div>
 
-            {/* App skeleton + Nudgify modal */}
-            <div className="p-5 text-left">
-              <div className="flex gap-4">
-                {/* Fake sidebar */}
-                <div className="w-28 shrink-0 space-y-2 pt-1">
-                  <div className="h-3 w-20 bg-white/10 rounded" />
-                  <div className="h-2.5 w-14 bg-white/6 rounded" />
-                  <div className="h-2.5 w-16 bg-white/6 rounded" />
-                  <div className="h-2.5 w-12 bg-white/6 rounded" />
-                  <div className="mt-3 h-2.5 w-20 bg-brand-600/25 rounded" />
-                  <div className="h-2.5 w-16 bg-white/6 rounded" />
-                </div>
-                {/* Fake main content */}
-                <div className="flex-1 space-y-3">
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="h-14 bg-white/5 rounded-lg border border-white/5" />
-                    <div className="h-14 bg-white/5 rounded-lg border border-white/5" />
-                    <div className="h-14 bg-white/5 rounded-lg border border-white/5" />
-                  </div>
-                  <div className="h-2 w-3/4 bg-white/6 rounded" />
-                  <div className="h-2 w-1/2 bg-white/6 rounded" />
+            {/* Headline */}
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#111827] leading-[1.05] tracking-tight mb-6">
+              Turn signups into<br />
+              <span className="text-[#4f6ef7]">activated customers</span>
+            </h1>
+
+            {/* Subheadline */}
+            <p className="text-lg text-gray-500 mb-4 leading-relaxed">
+              Add personalized onboarding flows to your SaaS in 10 minutes.
+              No developer changes after the initial setup.
+            </p>
+
+            {/* Power line */}
+            <p className="text-sm text-gray-400 mb-10">
+              Users who complete onboarding are{" "}
+              <strong className="text-[#4f6ef7] font-semibold">2–3× more likely</strong>{" "}
+              to become paying customers.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-3 mb-5">
+              <Link
+                href="/signup"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#4f6ef7] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-[#3b5af5] hover:scale-105 transition-all shadow-lg shadow-blue-200 cursor-pointer"
+              >
+                Start for free
+                <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+              <a
+                href="#how-it-works"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-gray-200 text-gray-600 px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-gray-50 hover:border-gray-300 transition-colors cursor-pointer"
+              >
+                See how it works
+              </a>
+            </div>
+
+            {/* Micro-proof */}
+            <div className="flex items-center lg:justify-start justify-center gap-2 text-xs text-gray-400 flex-wrap">
+              <span className="flex items-center gap-1">
+                <Zap size={11} className="text-[#4f6ef7]" />
+                Free to start
+              </span>
+              <span className="text-gray-200">·</span>
+              <span>No credit card required</span>
+              <span className="text-gray-200">·</span>
+              <span>Setup in 10 minutes</span>
+            </div>
+          </div>
+
+          {/* ── Right: browser mockup ── */}
+          <div className="relative">
+            {/* Glow */}
+            <div className="absolute -inset-8 bg-gradient-to-r from-brand-300/25 via-purple-300/15 to-brand-300/25 rounded-[40px] blur-2xl" />
+
+            <div className="relative bg-[#0f0f13] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/5">
+              {/* Title bar */}
+              <div className="flex items-center gap-1.5 px-4 py-3 bg-gray-900/80 border-b border-white/5">
+                <span className="w-3 h-3 rounded-full bg-red-400/70" />
+                <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
+                <span className="w-3 h-3 rounded-full bg-green-400/70" />
+                <div className="flex-1 flex justify-center">
+                  <span className="text-xs text-gray-500 font-mono bg-white/5 px-4 py-0.5 rounded-md">
+                    app.yourproduct.com
+                  </span>
                 </div>
               </div>
 
-              {/* Nudgify welcome modal overlay */}
-              <div className="mt-4 relative">
-                <div className="absolute inset-0 bg-black/30 rounded-xl" />
-                <div className="relative mx-auto max-w-xs bg-white rounded-2xl p-5 shadow-2xl">
-                  <div className="flex items-start gap-3 mb-3">
-                    <span className="shrink-0 w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center">
-                      <Sparkles size={14} className="text-[#4f6ef7]" />
-                    </span>
-                    <div>
-                      <p className="text-xs font-bold text-gray-900 leading-snug">Welcome to your dashboard! 👋</p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">Let us show you around in 2 minutes.</p>
-                    </div>
+              {/* App skeleton + Nudgify modal */}
+              <div className="p-5 text-left">
+                <div className="flex gap-4">
+                  {/* Fake sidebar */}
+                  <div className="w-24 shrink-0 space-y-2 pt-1">
+                    <div className="h-3 w-18 bg-white/10 rounded" />
+                    <div className="h-2.5 w-14 bg-white/6 rounded" />
+                    <div className="h-2.5 w-16 bg-white/6 rounded" />
+                    <div className="h-2.5 w-12 bg-white/6 rounded" />
+                    <div className="mt-3 h-2.5 w-18 bg-brand-600/25 rounded" />
+                    <div className="h-2.5 w-14 bg-white/6 rounded" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-semibold bg-[#4f6ef7] text-white px-3 py-1.5 rounded-full cursor-pointer">
-                      Show me →
-                    </span>
-                    <span className="text-[11px] text-gray-400 cursor-pointer">Skip for now</span>
+                  {/* Fake main */}
+                  <div className="flex-1 space-y-3">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="h-12 bg-white/5 rounded-lg border border-white/5" />
+                      <div className="h-12 bg-white/5 rounded-lg border border-white/5" />
+                      <div className="h-12 bg-white/5 rounded-lg border border-white/5" />
+                    </div>
+                    <div className="h-2 w-3/4 bg-white/6 rounded" />
+                    <div className="h-2 w-1/2 bg-white/6 rounded" />
+                  </div>
+                </div>
+
+                {/* Nudgify welcome modal */}
+                <div className="mt-4 relative">
+                  <div className="absolute inset-0 bg-black/30 rounded-xl" />
+                  <div className="relative mx-auto max-w-xs bg-white rounded-2xl p-5 shadow-2xl">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="shrink-0 w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center">
+                        <Sparkles size={14} className="text-[#4f6ef7]" />
+                      </span>
+                      <div>
+                        <p className="text-xs font-bold text-gray-900 leading-snug">Welcome to your dashboard! 👋</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5">Let us show you around in 2 minutes.</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-semibold bg-[#4f6ef7] text-white px-3 py-1.5 rounded-full">
+                        Show me →
+                      </span>
+                      <span className="text-[11px] text-gray-400">Skip for now</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -389,7 +309,6 @@ function BeforeAfter() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-5">
-          {/* Without */}
           <div className="bg-red-50 border border-red-100 rounded-2xl p-7">
             <div className="flex items-center gap-2 mb-6">
               <span className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center">
@@ -409,7 +328,6 @@ function BeforeAfter() {
             </ul>
           </div>
 
-          {/* With */}
           <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-7">
             <div className="flex items-center gap-2 mb-6">
               <span className="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -476,9 +394,7 @@ function HowItWorks() {
 
         {/* Steps */}
         <div className="relative grid md:grid-cols-3 gap-8 mb-16">
-          {/* Connecting line (desktop) */}
           <div className="hidden md:block absolute top-9 left-[calc(16.67%+20px)] right-[calc(16.67%+20px)] h-px bg-gradient-to-r from-brand-200 via-brand-300 to-brand-200" />
-
           {steps.map((s) => (
             <div
               key={s.step}
@@ -534,95 +450,82 @@ function HowItWorks() {
   );
 }
 
-/* ── Comparison Table ────────────────────────────────────────────────────── */
+/* ── Comparison Section (replaces table) ─────────────────────────────────── */
 
-type CellValue = string | boolean;
+function ComparisonSection() {
+  const tools = [
+    {
+      name: "Appcues",
+      price: "$300+/mo",
+      setup: "Days to setup",
+      plan: "No free plan",
+      highlight: false,
+    },
+    {
+      name: "Nudgify",
+      price: "From $29/mo",
+      setup: "10 min setup",
+      plan: "Free plan included",
+      highlight: true,
+    },
+    {
+      name: "Pendo",
+      price: "$700+/mo",
+      setup: "Weeks to setup",
+      plan: "Enterprise only",
+      highlight: false,
+    },
+  ];
 
-const COMPARISON_ROWS: { label: string; nudgify: CellValue; appcues: CellValue; pendo: CellValue }[] = [
-  { label: "Starting price",    nudgify: "Free",       appcues: "$249/mo",   pendo: "$7,000+/yr" },
-  { label: "No-code builder",   nudgify: true,         appcues: true,        pendo: true          },
-  { label: "AI flow generator", nudgify: true,         appcues: false,       pendo: false         },
-  { label: "Snippet size",      nudgify: "< 10 KB",    appcues: "~150 KB",   pendo: "~200 KB"     },
-  { label: "Setup time",        nudgify: "10 minutes", appcues: "2–3 days",  pendo: "1+ week"     },
-  { label: "Analytics",         nudgify: true,         appcues: true,        pendo: true          },
-  { label: "Built for",         nudgify: "Founders",   appcues: "Mid-market",pendo: "Enterprise"  },
-];
-
-function Cell({ value, highlight }: { value: CellValue; highlight?: boolean }) {
-  if (typeof value === "boolean") {
-    return value ? (
-      <span className={`inline-flex items-center justify-center w-6 h-6 rounded-full ${highlight ? "bg-white/20" : "bg-emerald-50"}`}>
-        <Check size={13} className={highlight ? "text-white" : "text-emerald-600"} strokeWidth={2.5} />
-      </span>
-    ) : (
-      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-100">
-        <X size={13} className="text-gray-400" strokeWidth={2.5} />
-      </span>
-    );
-  }
-  return (
-    <span className={`text-sm font-medium ${highlight ? "text-white" : "text-gray-700"}`}>
-      {value}
-    </span>
-  );
-}
-
-function ComparisonTable() {
   return (
     <section className="py-24 px-6 bg-gray-50">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-xs font-bold uppercase tracking-widest text-[#4f6ef7] mb-3">Honest comparison</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-[#111827] mb-4">
-            How we stack up
+            Built for a different stage
           </h2>
           <p className="text-gray-500 max-w-lg mx-auto">
-            Nudgify is built for early-stage founders, not enterprise procurement teams.
+            Nudgify is for founders at 0–50K MAU, not enterprise procurement teams.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-          {/* Header */}
-          <div className="grid grid-cols-4 border-b border-gray-100">
-            <div className="p-5 col-span-1" />
-            <div className="p-5 text-center border-l border-gray-100">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Appcues</span>
-            </div>
-            <div className="p-5 text-center bg-[#4f6ef7] border-l border-[#4f6ef7]/20">
-              <span className="text-xs font-bold text-white uppercase tracking-wide">Nudgify</span>
-              <div className="mt-0.5 text-[10px] text-blue-200 font-medium">← you are here</div>
-            </div>
-            <div className="p-5 text-center border-l border-gray-100">
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pendo</span>
-            </div>
-          </div>
-
-          {/* Rows */}
-          {COMPARISON_ROWS.map((row, i) => (
+        <div className="grid md:grid-cols-3 gap-4 mb-10">
+          {tools.map((t) => (
             <div
-              key={row.label}
-              className={`grid grid-cols-4 ${i < COMPARISON_ROWS.length - 1 ? "border-b border-gray-100" : ""}`}
+              key={t.name}
+              className={`rounded-2xl p-6 text-center flex flex-col items-center gap-1 transition-all ${
+                t.highlight
+                  ? "bg-[#4f6ef7] text-white shadow-xl shadow-blue-200 md:scale-105"
+                  : "bg-white border border-gray-200"
+              }`}
             >
-              <div className="p-4 flex items-center">
-                <span className="text-sm text-gray-600 font-medium">{row.label}</span>
-              </div>
-              <div className="p-4 flex items-center justify-center border-l border-gray-100">
-                <Cell value={row.appcues} />
-              </div>
-              <div className="p-4 flex items-center justify-center bg-[#4f6ef7]/5 border-l border-[#4f6ef7]/10">
-                <Cell value={row.nudgify} highlight />
-              </div>
-              <div className="p-4 flex items-center justify-center border-l border-gray-100">
-                <Cell value={row.pendo} />
-              </div>
+              {t.highlight && (
+                <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200 mb-1">
+                  ← that&apos;s us
+                </span>
+              )}
+              <p className={`text-lg font-bold mb-2 ${t.highlight ? "text-white" : "text-gray-900"}`}>
+                {t.name}
+              </p>
+              <p className={`text-sm font-semibold ${t.highlight ? "text-white" : "text-[#4f6ef7]"}`}>
+                {t.price}
+              </p>
+              <p className={`text-xs ${t.highlight ? "text-blue-200" : "text-gray-500"}`}>{t.setup}</p>
+              <p className={`text-xs ${t.highlight ? "text-blue-200" : "text-gray-500"}`}>{t.plan}</p>
             </div>
           ))}
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-4">
-          Appcues and Pendo prices as of 2026. Nudgify pricing always at{" "}
-          <a href="#pricing" className="text-[#4f6ef7] hover:underline">nudgify.app/pricing</a>.
-        </p>
+        <div className="text-center">
+          <Link
+            href="/compare"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#4f6ef7] hover:text-[#3b5af5] transition-colors"
+          >
+            See full feature-by-feature comparison
+            <ArrowRight size={14} />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -635,11 +538,8 @@ function Testimonial() {
     <section className="py-24 px-6 bg-white">
       <div className="max-w-3xl mx-auto">
         <div className="bg-[#0f0f13] rounded-3xl p-10 sm:p-14 text-center relative overflow-hidden">
-          {/* Subtle glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 bg-brand-600/20 rounded-full blur-3xl" />
-
           <div className="relative">
-            {/* Stars */}
             <div className="flex items-center justify-center gap-1 mb-6">
               {[...Array(5)].map((_, i) => (
                 <svg key={i} className="w-4 h-4 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
@@ -647,11 +547,9 @@ function Testimonial() {
                 </svg>
               ))}
             </div>
-
             <blockquote className="text-xl sm:text-2xl font-semibold text-white leading-snug mb-8 max-w-xl mx-auto">
               &ldquo;We cut day-1 churn by 40% in the first week. Setup took less than an afternoon — and our users finally know what to do when they land.&rdquo;
             </blockquote>
-
             <div className="flex items-center justify-center gap-3">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm shrink-0">
                 A
@@ -688,14 +586,14 @@ function FinalCta() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/signup"
-              className="group inline-flex items-center gap-2 bg-white text-[#4f6ef7] px-8 py-3.5 rounded-full text-sm font-bold hover:bg-blue-50 hover:scale-105 transition-all shadow-lg shadow-black/10"
+              className="group inline-flex items-center gap-2 bg-white text-[#4f6ef7] px-8 py-3.5 rounded-full text-sm font-bold hover:bg-blue-50 hover:scale-105 transition-all shadow-lg shadow-black/10 cursor-pointer"
             >
               Start for free
               <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
-              href="#pricing"
-              className="text-sm font-medium text-blue-200 hover:text-white transition-colors px-4 py-3.5"
+              href="/#pricing"
+              className="text-sm font-medium text-blue-200 hover:text-white transition-colors px-4 py-3.5 cursor-pointer"
             >
               See pricing →
             </Link>
@@ -703,99 +601,5 @@ function FinalCta() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-
-function Footer() {
-  const cols = [
-    {
-      heading: "Product",
-      links: [
-        { label: "Features", href: "#features" },
-        { label: "Pricing", href: "#pricing" },
-        { label: "How it works", href: "#how-it-works" },
-        { label: "Compare", href: "/compare" },
-      ],
-    },
-    {
-      heading: "Developers",
-      links: [
-        { label: "Documentation", href: "/docs" },
-        { label: "Snippet reference", href: "/docs/snippet" },
-        { label: "API reference", href: "/docs/api" },
-        { label: "Changelog", href: "/changelog" },
-      ],
-    },
-    {
-      heading: "Company",
-      links: [
-        { label: "About", href: "/about" },
-        { label: "Blog", href: "/blog" },
-        { label: "Privacy", href: "/privacy" },
-        { label: "Terms", href: "/terms" },
-      ],
-    },
-    {
-      heading: "Account",
-      links: [
-        { label: "Sign in", href: "/login" },
-        { label: "Sign up free", href: "/signup" },
-        { label: "Dashboard", href: "/flows" },
-        { label: "Settings", href: "/settings" },
-      ],
-    },
-  ];
-
-  return (
-    <footer className="bg-[#0f0f13] px-6 pt-16 pb-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Top: logo + columns */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-3">
-              <Image src="/nudgify-logo.svg" alt="" width={20} height={20} />
-              <span className="text-xl font-bold text-white">Nudgify</span>
-            </Link>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Lightweight onboarding for SaaS founders who move fast.
-            </p>
-          </div>
-
-          {/* Link columns */}
-          {cols.map((col) => (
-            <div key={col.heading}>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">
-                {col.heading}
-              </p>
-              <ul className="space-y-2.5">
-                {col.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-gray-500 hover:text-gray-200 transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Bottom bar */}
-        <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-600">
-            © 2026 Nudgify. Built for SaaS founders.
-          </p>
-          <p className="text-xs text-gray-600">
-            Lighter than Appcues. Cheaper than Pendo. Ships today.
-          </p>
-        </div>
-      </div>
-    </footer>
   );
 }

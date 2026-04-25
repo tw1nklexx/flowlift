@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Check, X, ArrowRight } from "lucide-react";
+import SharedPublicLayout from "@/components/SharedPublicLayout";
 
 export const metadata = {
   title: "Why Nudgify — Comparison with Appcues, Pendo & DIY",
@@ -11,10 +12,7 @@ export const metadata = {
 
 export default function ComparePage() {
   return (
-    <div className="min-h-screen bg-white text-gray-900">
-      <Nav />
-
-      {/* offset for fixed nav */}
+    <SharedPublicLayout>
       <div className="pt-14">
         <Hero />
         <WhoItsFor />
@@ -22,42 +20,11 @@ export default function ComparePage() {
         <ComparisonTable />
         <HonestPitch />
         <Faq />
-        <Footer />
       </div>
-    </div>
+    </SharedPublicLayout>
   );
 }
 
-/* ── Nav ─────────────────────────────────────────────────────────────────── */
-
-function Nav() {
-  return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100">
-      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold text-[#4f6ef7]">
-          Nudgify
-        </Link>
-        <div className="flex items-center gap-1">
-          <Link href="/#pricing" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer px-2 py-2 hidden sm:block">
-            Pricing
-          </Link>
-          <Link href="/compare" className="text-sm font-medium text-[#4f6ef7] cursor-pointer px-2 py-2 hidden sm:block">
-            Compare
-          </Link>
-          <Link href="/docs" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer px-2 py-2 hidden sm:block">
-            Docs
-          </Link>
-          <Link href="/login" className="text-gray-600 hover:text-gray-900 font-medium transition-colors cursor-pointer px-2 py-2 text-sm">
-            Sign in
-          </Link>
-          <Link href="/signup" className="text-sm font-semibold bg-[#4f6ef7] text-white px-4 py-2 rounded-lg hover:bg-[#3b5af5] transition-colors cursor-pointer ml-1">
-            Start free
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 /* ── Section 1: Hero ─────────────────────────────────────────────────────── */
 
@@ -343,26 +310,3 @@ function Faq() {
   );
 }
 
-/* ── Footer ──────────────────────────────────────────────────────────────── */
-
-function Footer() {
-  return (
-    <footer className="bg-white border-t border-gray-100 py-10 px-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
-          <span className="text-base font-bold text-[#4f6ef7]">Nudgify</span>
-          <nav className="flex items-center gap-6">
-            <Link href="/" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Home</Link>
-            <Link href="/compare" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Compare</Link>
-            <Link href="/docs" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Docs</Link>
-            <Link href="/#pricing" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Pricing</Link>
-            <Link href="/login" className="text-sm text-gray-400 hover:text-gray-700 transition-colors">Sign in</Link>
-          </nav>
-        </div>
-        <div className="border-t border-gray-200 pt-5 text-center sm:text-left">
-          <p className="text-xs text-gray-400">© 2026 Nudgify. Built for SaaS founders.</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
