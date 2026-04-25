@@ -47,25 +47,27 @@ export default function BillingSection({
       </div>
       <div className="grid grid-cols-2 gap-4">
         {PLAN_META.map((p) => (
-          <div key={p.id} className="border border-gray-200 rounded-xl p-4">
-            <div className="flex items-baseline justify-between mb-3">
-              <span className="font-semibold text-gray-900">{p.name}</span>
-              <span className="text-sm font-bold text-gray-900">{p.price}</span>
-            </div>
-            <ul className="space-y-1 mb-4">
-              {p.features.map((f) => (
-                <li key={f} className="text-xs text-gray-500 flex items-center gap-1">
-                  <span className="text-green-500">✓</span> {f}
-                </li>
-              ))}
-            </ul>
-            {plan !== p.id && (
-              <div className="bg-green-50 border border-green-100 rounded-lg px-3 py-2.5 mb-3">
-                {p.benefits.map((b) => (
-                  <p key={b} className="text-xs text-green-700 leading-relaxed">✓ {b}</p>
-                ))}
+          <div key={p.id} className="border border-gray-200 rounded-xl p-4 flex flex-col">
+            <div className="flex-1">
+              <div className="flex items-baseline justify-between mb-3">
+                <span className="font-semibold text-gray-900">{p.name}</span>
+                <span className="text-sm font-bold text-gray-900">{p.price}</span>
               </div>
-            )}
+              <ul className="space-y-1 mb-4">
+                {p.features.map((f) => (
+                  <li key={f} className="text-xs text-gray-500 flex items-center gap-1">
+                    <span className="text-green-500">✓</span> {f}
+                  </li>
+                ))}
+              </ul>
+              {plan !== p.id && (
+                <div className="bg-green-50 border border-green-100 rounded-lg px-3 py-2.5 mb-3">
+                  {p.benefits.map((b) => (
+                    <p key={b} className="text-xs text-green-700 leading-relaxed">✓ {b}</p>
+                  ))}
+                </div>
+              )}
+            </div>
             {plan === p.id ? (
               <div className="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-500 text-sm text-center">
                 Current plan
