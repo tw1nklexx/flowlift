@@ -891,9 +891,17 @@ function TargetingPanel({
                 min={1}
                 max={300}
                 value={rules.idle_seconds ?? 10}
+                placeholder="10"
                 onChange={(e) => {
-                  const v = Math.max(1, Math.min(300, Number(e.target.value) || 10));
+                  const raw = e.target.value;
+                  if (raw === "") { onIdleChange(10); return; }
+                  const n = Number(raw);
+                  const v = isNaN(n) ? 10 : Math.max(1, Math.min(300, n));
                   onIdleChange(v);
+                }}
+                onBlur={(e) => {
+                  const n = Number(e.target.value);
+                  if (!e.target.value || isNaN(n) || n < 1) onIdleChange(10);
                 }}
                 className="w-20 text-xs border border-gray-200 rounded-md px-2 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
