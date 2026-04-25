@@ -44,27 +44,27 @@ function Nav() {
           Nudgify
         </Link>
         <nav className="flex items-center gap-2">
-          <a
-            href="#pricing"
-            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-1.5 hidden sm:block"
+          <Link
+            href="/#pricing"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-1.5 hidden sm:block cursor-pointer"
           >
             Pricing
-          </a>
+          </Link>
           <Link
             href="/docs"
-            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-1.5 hidden sm:block"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-1.5 hidden sm:block cursor-pointer"
           >
             Docs
           </Link>
-          <a
+          <Link
             href="/login"
-            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:border-gray-300 px-3 py-1.5 rounded-lg cursor-pointer"
+            className="text-gray-600 hover:text-gray-900 font-medium transition-colors cursor-pointer px-3 py-1.5 text-sm"
           >
             Sign in
-          </a>
+          </Link>
           <Link
             href="/signup"
-            className="text-sm font-semibold bg-[#4f6ef7] text-white px-4 py-1.5 rounded-lg hover:bg-[#3b5af5] transition-colors"
+            className="text-sm font-semibold bg-[#4f6ef7] text-white px-4 py-1.5 rounded-lg hover:bg-[#3b5af5] transition-colors cursor-pointer"
           >
             Start free
           </Link>
