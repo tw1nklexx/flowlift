@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { PartyPopper, TrendingUp } from "lucide-react";
+import { PartyPopper, TrendingUp, Sparkles, Undo2 } from "lucide-react";
 import type { Flow, Step, StepType, TargetingRules, Condition, ConditionType } from "@/types";
 import PreviewModal from "@/components/PreviewModal";
 
@@ -516,6 +516,50 @@ function ContentPanel({
   step: Step;
   onChange: (patch: Partial<Step>) => void;
 }) {
+  const [aiLoading, setAiLoading] = useState(false);
+  const [undoPrev, setUndoPrev] = useState<{ title?: string; body: string; cta_label: string } | null>(null);
+  const [undoTimer, setUndoTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+
+  async function handleImprove() {
+    if (!step.body || aiLoading) return;
+    setAiLoading(true);
+    try {
+      const res = await fetch("/api/ai/improve-step", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: step.type,
+          title: step.title,
+          body: step.body,
+          cta_label: step.cta_label,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      const improved = await res.json();
+      // Save previous for undo
+      setUndoPrev({ title: step.title, body: step.body, cta_label: step.cta_label });
+      // Apply improvements
+      const patch: Partial<Step> = { body: improved.body, cta_label: improved.cta_label };
+      if (step.type === "modal" && improved.title) patch.title = improved.title;
+      onChange(patch);
+      // Auto-clear undo after 5s
+      if (undoTimer) clearTimeout(undoTimer);
+      const t = setTimeout(() => setUndoPrev(null), 5000);
+      setUndoTimer(t);
+    } catch {
+      // silently fail — user content unchanged
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
+  function handleUndo() {
+    if (!undoPrev) return;
+    onChange({ title: undoPrev.title, body: undoPrev.body, cta_label: undoPrev.cta_label });
+    setUndoPrev(null);
+    if (undoTimer) clearTimeout(undoTimer);
+  }
+
   return (
     <div className="space-y-4">
       <div>
@@ -545,6 +589,29 @@ function ContentPanel({
           placeholder="Explain what the user should do or know"
         />
       </Field>
+
+      {/* AI improve button */}
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={handleImprove}
+          disabled={aiLoading || !step.body.trim()}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity cursor-pointer"
+        >
+          <Sparkles size={12} />
+          {aiLoading ? "Improving…" : "Improve with AI"}
+        </button>
+        {undoPrev && (
+          <button
+            type="button"
+            onClick={handleUndo}
+            className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+          >
+            <Undo2 size={11} />
+            Undo
+          </button>
+        )}
+      </div>
 
       {step.type === "tooltip" && (
         <Field label="Target selector">

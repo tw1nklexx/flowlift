@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { PartyPopper, Lightbulb } from "lucide-react";
+import { PartyPopper, Lightbulb, TrendingDown } from "lucide-react";
 
 const BENCHMARK = 38; // industry avg completion rate %
 
@@ -50,13 +50,13 @@ export default async function StatsPage() {
       .eq("event_type", "flow_completed"),
     supabase
       .from("flows")
-      .select("id, name, is_active")
+      .select("id, name, is_active, steps")
       .eq("project_id", project.id),
     supabase
       .from("flow_events")
-      .select("flow_id, event_type")
+      .select("flow_id, event_type, step_index")
       .eq("project_id", project.id)
-      .in("event_type", ["flow_shown", "flow_completed"]),
+      .in("event_type", ["flow_shown", "flow_completed", "step_advanced"]),
   ]);
 
   const impressions = totalImpressions ?? 0;
@@ -83,6 +83,50 @@ export default async function StatsPage() {
   const hasData = impressions > 0;
   const hasActiveFlow = (flows ?? []).some((f) => f.is_active);
   const aboveBenchmark = hasData && overallRate >= BENCHMARK;
+
+  // ── Drop-off analysis ─────────────────────────────────────────────────────
+  interface FunnelStep { label: string; users: number; pct: number; drop: number }
+  interface DropOffFlow { id: string; name: string; funnel: FunnelStep[]; biggestDropIdx: number }
+
+  const dropOffFlows: DropOffFlow[] = (flows ?? [])
+    .filter((f) => {
+      const stepCount = Array.isArray(f.steps) ? f.steps.length : 0;
+      const fe = (events ?? []).filter((e) => e.flow_id === f.id);
+      return stepCount > 1 && fe.some((e) => e.event_type === "flow_shown");
+    })
+    .map((f) => {
+      const fe = (events ?? []).filter((e) => e.flow_id === f.id);
+      const stepCount = (f.steps as unknown[]).length;
+      const shown = fe.filter((e) => e.event_type === "flow_shown").length;
+
+      // users[i] = how many reached step i
+      // step 0 = flow_shown; step i+1 = step_advanced with step_index === i
+      const usersAtStep: number[] = [shown];
+      for (let i = 0; i < stepCount - 1; i++) {
+        const advanced = fe.filter(
+          (e) => e.event_type === "step_advanced" && e.step_index === i
+        ).length;
+        usersAtStep.push(advanced);
+      }
+
+      const funnel: FunnelStep[] = usersAtStep.map((u, i) => ({
+        label: `Step ${i + 1}`,
+        users: u,
+        pct: shown > 0 ? Math.round((u / shown) * 100) : 0,
+        drop: i === 0 ? 0 : usersAtStep[i - 1] > 0
+          ? Math.round(((usersAtStep[i - 1] - u) / usersAtStep[i - 1]) * 100)
+          : 0,
+      }));
+
+      // Index of biggest drop (skip step 0)
+      let biggestDropIdx = 1;
+      for (let i = 2; i < funnel.length; i++) {
+        if (funnel[i].drop > funnel[biggestDropIdx].drop) biggestDropIdx = i;
+      }
+
+      return { id: f.id, name: f.name, funnel, biggestDropIdx };
+    })
+    .filter((f) => f.funnel[0].users > 0);
 
   return (
     <div className="p-8 max-w-3xl">
@@ -279,6 +323,76 @@ export default async function StatsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* ── Drop-off analysis ──────────────────────────────────────────── */}
+      {dropOffFlows.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-base font-bold text-gray-900 mb-1">Drop-off analysis</h2>
+          <p className="text-sm text-gray-400 mb-4">Where users stop completing your flows</p>
+          <div className="space-y-4">
+            {dropOffFlows.map((flow) => {
+              const worst = flow.funnel[flow.biggestDropIdx];
+              return (
+                <div key={flow.id} className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <p className="text-sm font-semibold text-gray-900">{flow.name}</p>
+                    <Link
+                      href={`/flows/${flow.id}`}
+                      className="text-xs text-brand-600 font-medium hover:underline whitespace-nowrap shrink-0"
+                    >
+                      Edit this flow →
+                    </Link>
+                  </div>
+
+                  {/* Funnel bars */}
+                  <div className="space-y-2 mb-4">
+                    {flow.funnel.map((step, i) => {
+                      const isBiggestDrop = i === flow.biggestDropIdx && step.drop > 0;
+                      return (
+                        <div key={i} className="flex items-center gap-3">
+                          <span className="text-xs text-gray-400 w-12 shrink-0">{step.label}</span>
+                          <div className="flex-1 h-6 bg-gray-100 rounded-md overflow-hidden relative">
+                            <div
+                              className={`h-full rounded-md transition-all duration-500 ${
+                                isBiggestDrop ? "bg-orange-400" : "bg-brand-400"
+                              }`}
+                              style={{ width: `${Math.max(step.pct, 2)}%` }}
+                            />
+                            <span className="absolute inset-y-0 left-2 flex items-center text-xs font-medium text-white">
+                              {step.users.toLocaleString()} users
+                            </span>
+                          </div>
+                          <span className={`text-xs font-semibold w-10 text-right shrink-0 ${
+                            isBiggestDrop ? "text-orange-500" : "text-gray-500"
+                          }`}>
+                            {step.pct}%
+                          </span>
+                          {isBiggestDrop && (
+                            <span className="text-xs text-orange-500 font-bold shrink-0">↓{step.drop}%</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Insight */}
+                  {worst.drop > 0 && (
+                    <div className="flex items-start gap-2.5 bg-orange-50 border border-orange-100 rounded-xl px-4 py-3">
+                      <TrendingDown size={15} className="text-orange-500 shrink-0 mt-0.5" />
+                      <p className="text-sm text-orange-800">
+                        <span className="font-semibold">
+                          Most users drop at {worst.label}
+                        </span>{" "}
+                        — {worst.drop}% don&apos;t make it past this step. Consider shortening or simplifying it.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
