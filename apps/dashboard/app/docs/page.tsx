@@ -424,16 +424,13 @@ function Nav() {
           Nudgify
         </Link>
         <nav className="flex items-center gap-6">
-          <Link
-            href="/docs"
-            className="text-sm font-medium text-[#4f6ef7]"
-          >
+          <Link href="/compare" className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors hidden sm:block">
+            Compare
+          </Link>
+          <Link href="/docs" className="text-sm font-medium text-[#4f6ef7]">
             Docs
           </Link>
-          <Link
-            href="/login"
-            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-          >
+          <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
             Sign in
           </Link>
         </nav>
