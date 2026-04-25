@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Hand, Lightbulb, Rocket, X } from "lucide-react";
 
 interface Props {
   apiKey: string;
@@ -86,15 +87,16 @@ export default function WelcomeClient({ apiKey }: Props) {
           transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
         }}
       >
-        <p className="text-sm text-white">
-          👋 By the way — this is exactly what your users will see
+        <p className="text-sm text-white flex items-center gap-2">
+          <Hand size={14} aria-hidden="true" />
+          By the way — this is exactly what your users will see
         </p>
         <button
           onClick={() => setBannerDismissed(true)}
-          className="text-white/60 hover:text-white text-xl ml-6 leading-none transition-colors"
+          className="text-white/60 hover:text-white ml-6 transition-colors cursor-pointer"
           aria-label="Dismiss"
         >
-          ×
+          <X size={16} />
         </button>
       </div>
 
@@ -194,7 +196,7 @@ export default function WelcomeClient({ apiKey }: Props) {
                 </div>
               ) : (
                 <div className="mt-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 text-xs text-blue-800 leading-relaxed">
-                  💡 <strong>When to use identify():</strong> Call it right after your user
+                  <Lightbulb size={13} className="inline-block mr-1 text-blue-500" aria-hidden="true" /><strong>When to use identify():</strong> Call it right after your user
                   authenticates. Enables targeting by plan, role, or user properties. Without it,
                   FlowLift still works but targets all users equally.
                 </div>
@@ -251,7 +253,9 @@ export default function WelcomeClient({ apiKey }: Props) {
               }}
             >
               <div className="mt-4 text-center bg-gradient-to-br from-blue-50 to-indigo-50 border border-indigo-100 rounded-2xl py-10 px-6">
-                <p className="text-2xl mb-2">🚀</p>
+                <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-100 mx-auto mb-3">
+                  <Rocket size={22} className="text-brand-600" aria-hidden="true" />
+                </div>
                 <p className="text-lg font-bold text-gray-900 mb-1">You&apos;re ready to go</p>
                 <p className="text-sm text-gray-500 mb-5">
                   Your first flow is one click away.

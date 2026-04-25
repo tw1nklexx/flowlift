@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/types";
+import { Sparkles } from "lucide-react";
 import ApiKeyDisplay from "./ApiKeyDisplay";
 import BillingSection from "./BillingSection";
 import InstallTabs from "./InstallTabs";
@@ -46,9 +47,10 @@ export default async function SettingsPage() {
       </section>
 
       {(project?.plan ?? "free") === "free" && (
-        <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-500">
-          ✨ <span className="font-medium text-gray-700">Watermark:</span> The &apos;Add onboarding like this →&apos; badge appears on your flows.{" "}
-          Upgrade to Starter to remove it.
+        <div className="flex items-start gap-2.5 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-500">
+          <Sparkles size={15} className="text-gray-400 mt-0.5 shrink-0" aria-hidden="true" />
+          <span><span className="font-medium text-gray-700">Watermark:</span> The &apos;Add onboarding like this →&apos; badge appears on your flows.{" "}
+          Upgrade to Starter to remove it.</span>
         </div>
       )}
     </div>

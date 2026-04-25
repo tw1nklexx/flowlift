@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { PartyPopper, TrendingUp } from "lucide-react";
 import type { Flow, Step, StepType, TargetingRules, Condition, ConditionType } from "@/types";
 import PreviewModal from "@/components/PreviewModal";
 
@@ -209,8 +210,9 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
             <div className="h-1 bg-gradient-to-r from-[#4f6ef7] via-[#7c9bff] to-[#4f6ef7]" />
 
             <div className="p-8 text-center">
-              {/* Emoji */}
-              <div className="text-6xl mb-4 select-none leading-none">🎉</div>
+              <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-50 mx-auto mb-4">
+                <PartyPopper size={32} className="text-brand-600" aria-hidden="true" />
+              </div>
 
               {/* Headline */}
               <h2 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
@@ -223,8 +225,9 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
 
               {/* Metrics prediction */}
               <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3 mb-4 text-left">
-                <p className="text-sm text-green-800 font-medium">
-                  📈 Flows like this typically improve activation by 15–25%
+                <p className="text-sm text-green-800 font-medium flex items-center gap-1.5">
+                  <TrendingUp size={14} aria-hidden="true" />
+                  Flows like this typically improve activation by 15–25%
                 </p>
               </div>
 

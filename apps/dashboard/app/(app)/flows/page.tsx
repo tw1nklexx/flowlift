@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TEMPLATES } from "@/lib/templates";
 import type { Flow, Project } from "@/types";
+import { Zap, ChevronDown } from "lucide-react";
 import FlowsGuide from "./FlowsGuide";
 import FlowsHeader from "./FlowsHeader";
 
@@ -71,12 +72,14 @@ export default async function FlowsPage() {
       {/* First-time hero card */}
       {(!flows || flows.length === 0) && (
         <div className="mb-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl px-8 py-10 text-center text-white">
-          <p className="text-5xl mb-3 select-none">🚀</p>
+          <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-white/20 mx-auto mb-4">
+            <Zap size={28} className="text-white" />
+          </div>
           <h2 className="text-xl font-bold mb-2">Create your first onboarding flow</h2>
           <p className="text-sm text-blue-100 leading-relaxed max-w-sm mx-auto mb-5">
             Pick a template below and launch in 2 minutes. Your users will see it the moment they visit your app.
           </p>
-          <span className="text-2xl animate-bounce inline-block" aria-hidden="true">↓</span>
+          <ChevronDown size={24} className="animate-bounce inline-block text-white/80" aria-hidden="true" />
         </div>
       )}
 
@@ -126,7 +129,9 @@ export default async function FlowsPage() {
 
         {!flows || flows.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-            <p className="text-4xl mb-4">⚡</p>
+            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-brand-50 mx-auto mb-4">
+              <Zap size={22} className="text-brand-500" />
+            </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No flows yet</h3>
             <p className="text-sm text-gray-500 mb-6">
               Pick a template above or start from scratch

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import { PartyPopper, Lightbulb } from "lucide-react";
 
 const BENCHMARK = 38; // industry avg completion rate %
 
@@ -156,14 +157,14 @@ export default async function StatsPage() {
       {hasData && (
         aboveBenchmark ? (
           <div className="flex items-start gap-3 bg-green-50 border border-green-100 rounded-xl px-4 py-3 mb-6">
-            <span className="text-base leading-none mt-0.5">🎉</span>
+            <PartyPopper size={16} className="shrink-0 mt-0.5 text-green-600" aria-hidden="true" />
             <p className="text-sm text-green-800 font-medium">
               Great work! Your completion rate is above industry average.
             </p>
           </div>
         ) : (
           <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-6">
-            <span className="text-base leading-none mt-0.5">💡</span>
+            <Lightbulb size={16} className="shrink-0 mt-0.5 text-blue-500" aria-hidden="true" />
             <p className="text-sm text-blue-800">
               <span className="font-semibold">Tip:</span> Flows with 2–3 steps convert 40% better than longer ones.{" "}
               <Link href="/flows" className="font-semibold underline underline-offset-2 hover:text-blue-900">

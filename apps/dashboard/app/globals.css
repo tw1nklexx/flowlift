@@ -8,5 +8,6 @@
   }
   body {
     @apply bg-gray-50 text-gray-900;
+    font-family: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
   }
 }

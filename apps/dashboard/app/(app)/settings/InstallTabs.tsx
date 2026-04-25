@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Lightbulb } from "lucide-react";
 
 interface Props {
   apiKey: string;
@@ -85,7 +86,7 @@ export default function InstallTabs({ apiKey }: Props) {
         </div>
       ) : (
         <div className="mt-3 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg p-3 text-xs text-blue-800 leading-relaxed">
-          💡 <strong>When to use identify():</strong> Call it right after your user authenticates.
+          <Lightbulb size={13} className="inline-block mr-1 text-blue-500 shrink-0" aria-hidden="true" /><strong>When to use identify():</strong> Call it right after your user authenticates.
           Enables targeting by plan, role, or user properties. Without it, FlowLift still works
           but targets all users equally.
         </div>

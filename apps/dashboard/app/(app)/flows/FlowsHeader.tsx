@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { Sparkles } from "lucide-react";
 import AIGeneratorModal from "@/components/AIGeneratorModal";
 
 interface Props {
@@ -25,7 +26,7 @@ export default function FlowsHeader({ projectId }: Props) {
             onClick={() => setShowAI(true)}
             className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
           >
-            ✨ Generate with AI
+            <Sparkles size={14} className="mr-1.5" aria-hidden="true" />Generate with AI
           </button>
           <Link
             href="/flows/new"
