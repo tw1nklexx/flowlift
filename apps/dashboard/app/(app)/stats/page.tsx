@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
+const BENCHMARK = 38; // industry avg completion rate %
+
 interface FlowStat {
   id: string;
   name: string;
@@ -79,19 +81,102 @@ export default async function StatsPage() {
 
   const hasData = impressions > 0;
   const hasActiveFlow = (flows ?? []).some((f) => f.is_active);
+  const aboveBenchmark = hasData && overallRate >= BENCHMARK;
 
   return (
     <div className="p-8 max-w-3xl">
       <h1 className="text-2xl font-bold text-gray-900 mb-8">Stats</h1>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <StatCard label="Total impressions" value={impressions} />
-        <StatCard label="Completions" value={completions} />
-        <StatCard label="Completion rate" value={`${overallRate}%`} />
+      {/* ── Stat cards ────────────────────────────────────────────── */}
+      <div className="grid grid-cols-3 gap-4 mb-5">
+
+        {/* Card 1 — Impressions */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Impressions
+          </p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums leading-none">
+            {impressions.toLocaleString()}
+          </p>
+          <p className="text-xs text-gray-400 mt-2">times your flows were shown</p>
+        </div>
+
+        {/* Card 2 — Completion rate */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Completion rate
+          </p>
+          {hasData ? (
+            <>
+              <p className="text-3xl font-bold text-gray-900 tabular-nums leading-none mb-3">
+                {overallRate}%
+              </p>
+              {/* Progress bar with benchmark marker */}
+              <div className="relative h-1.5 bg-gray-100 rounded-full mb-2">
+                <div
+                  className="absolute inset-y-0 left-0 rounded-full"
+                  style={{
+                    width: `${Math.min(overallRate, 100)}%`,
+                    backgroundColor: aboveBenchmark ? "#22c55e" : "#f59e0b",
+                  }}
+                />
+                <div
+                  className="absolute top-1/2 -translate-y-1/2 w-px h-3 bg-gray-400"
+                  style={{ left: `${BENCHMARK}%` }}
+                />
+              </div>
+              <p className="text-[11px] text-gray-400 mb-1.5">Industry avg: {BENCHMARK}%</p>
+              {aboveBenchmark ? (
+                <span className="text-[11px] font-semibold text-green-600">Above average ↑</span>
+              ) : (
+                <span className="text-[11px] font-semibold text-amber-500">Room to improve →</span>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-3xl font-bold text-gray-300 leading-none mb-3">—</p>
+              <p className="text-xs text-gray-400">Publish a flow to start tracking</p>
+            </>
+          )}
+        </div>
+
+        {/* Card 3 — Completions */}
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+            Completions
+          </p>
+          <p className="text-3xl font-bold text-gray-900 tabular-nums leading-none">
+            {completions.toLocaleString()}
+          </p>
+          <p className="text-xs text-gray-400 mt-2">users finished your onboarding</p>
+        </div>
       </div>
 
+      {/* ── Insight banner ────────────────────────────────────────── */}
+      {hasData && (
+        aboveBenchmark ? (
+          <div className="flex items-start gap-3 bg-green-50 border border-green-100 rounded-xl px-4 py-3 mb-6">
+            <span className="text-base leading-none mt-0.5">🎉</span>
+            <p className="text-sm text-green-800 font-medium">
+              Great work! Your completion rate is above industry average.
+            </p>
+          </div>
+        ) : (
+          <div className="flex items-start gap-3 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-6">
+            <span className="text-base leading-none mt-0.5">💡</span>
+            <p className="text-sm text-blue-800">
+              <span className="font-semibold">Tip:</span> Flows with 2–3 steps convert 40% better than longer ones.{" "}
+              <Link href="/flows" className="font-semibold underline underline-offset-2 hover:text-blue-900">
+                Check your flow lengths →
+              </Link>
+            </p>
+          </div>
+        )
+      )}
+
+      {/* ── Flow table / empty state ──────────────────────────────── */}
       {!hasData ? (
-        <div className="bg-white rounded-2xl border border-gray-200 p-8">
+        <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm">
           <p className="text-sm font-semibold text-gray-700 mb-6">
             Here&apos;s what you need to start seeing data:
           </p>
@@ -114,10 +199,10 @@ export default async function StatsPage() {
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
+              <tr className="border-b border-gray-100 bg-gray-50/60">
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
                   Flow
                 </th>
@@ -139,7 +224,7 @@ export default async function StatsPage() {
               {stats.map((s, i) => (
                 <tr
                   key={s.id}
-                  className={i < stats.length - 1 ? "border-b border-gray-50" : ""}
+                  className={`hover:bg-gray-50/50 transition-colors ${i < stats.length - 1 ? "border-b border-gray-50" : ""}`}
                 >
                   <td className="px-5 py-3.5 font-medium text-gray-900">
                     <Link
@@ -155,8 +240,28 @@ export default async function StatsPage() {
                   <td className="px-5 py-3.5 text-right text-gray-600 tabular-nums">
                     {s.completed}
                   </td>
-                  <td className="px-5 py-3.5 text-right text-gray-600 tabular-nums">
-                    {s.shown > 0 ? `${s.rate}%` : "—"}
+                  <td className="px-5 py-3.5">
+                    {s.shown > 0 ? (
+                      <div className="flex items-center justify-end gap-2.5">
+                        <span className="tabular-nums text-gray-700 font-medium w-10 text-right text-xs">
+                          {s.rate}%
+                        </span>
+                        <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${Math.min(s.rate, 100)}%`,
+                              backgroundColor: s.rate >= BENCHMARK ? "#22c55e" : "#f59e0b",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-end gap-2.5">
+                        <span className="text-gray-300 w-10 text-right text-xs">—</span>
+                        <div className="w-16 h-1.5 bg-gray-100 rounded-full" />
+                      </div>
+                    )}
                   </td>
                   <td className="px-5 py-3.5 text-right">
                     <span
@@ -175,15 +280,6 @@ export default async function StatsPage() {
           </table>
         </div>
       )}
-    </div>
-  );
-}
-
-function StatCard({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="bg-white border border-gray-200 rounded-xl p-5">
-      <p className="text-sm text-gray-500 mb-1">{label}</p>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
     </div>
   );
 }
