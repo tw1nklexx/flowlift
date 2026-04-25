@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { PartyPopper, Lightbulb, TrendingDown } from "lucide-react";
+import { SnippetInstallStep } from "./SnippetInstallStep";
 import { FixWithAIButton } from "./FixWithAIButton";
 
 const BENCHMARK = 38; // industry avg completion rate %
@@ -235,13 +236,7 @@ export default async function StatsPage() {
               href={!hasActiveFlow ? "/flows" : undefined}
               hrefLabel="Go to Flows →"
             />
-            <SetupStep
-              done={false}
-              label="Install the snippet in your app"
-              hint="Paste the snippet into your app's HTML so Nudgify can track events."
-              href="/settings"
-              hrefLabel="Go to Settings →"
-            />
+            <SnippetInstallStep />
           </div>
         </div>
       ) : (
