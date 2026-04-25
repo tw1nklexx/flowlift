@@ -46,6 +46,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [published, setPublished] = useState(false);
+  const [countdown, setCountdown] = useState(6);
   const [activeTab, setActiveTab] = useState<"content" | "design" | "targeting">("content");
   const [previewing, setPreviewing] = useState(false);
 
@@ -105,11 +106,15 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
 
   useEffect(() => {
     if (!published) return;
-    const t = setTimeout(() => {
+    setCountdown(6);
+    const redirect = setTimeout(() => {
       router.push("/flows");
       router.refresh();
-    }, 5000);
-    return () => clearTimeout(t);
+    }, 6000);
+    const tick = setInterval(() => {
+      setCountdown((c) => Math.max(0, c - 1));
+    }, 1000);
+    return () => { clearTimeout(redirect); clearInterval(tick); };
   }, [published, router]);
 
   async function save(publish: boolean) {
@@ -198,36 +203,67 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
       )}
 
       {published && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 text-center shadow-2xl">
-            <p className="text-5xl mb-3 select-none">🎉</p>
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Flow published!</h2>
-            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
-              Your users will now see this flow when they visit your app.
-            </p>
-            {apiKey && (
-              <>
-                <div className="bg-gray-900 rounded-xl px-5 py-3.5 text-left mb-2">
-                  <pre className="text-emerald-400 text-xs font-mono">{`FlowLift.init("${apiKey}");`}</pre>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-[480px] overflow-hidden">
+            {/* Top accent */}
+            <div className="h-1 bg-gradient-to-r from-[#4f6ef7] via-[#7c9bff] to-[#4f6ef7]" />
+
+            <div className="p-8 text-center">
+              {/* Emoji */}
+              <div className="text-6xl mb-4 select-none leading-none">🎉</div>
+
+              {/* Headline */}
+              <h2 className="text-2xl font-bold text-gray-900 mb-2 tracking-tight">
+                Flow published!
+              </h2>
+              <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+                Your users will see this flow automatically.
+                <br />No deployment needed.
+              </p>
+
+              {/* Metrics prediction */}
+              <div className="bg-green-50 border border-green-100 rounded-xl px-4 py-3 mb-4 text-left">
+                <p className="text-sm text-green-800 font-medium">
+                  📈 Flows like this typically improve activation by 15–25%
+                </p>
+              </div>
+
+              {/* Install reminder — only for first flow (no existing id) */}
+              {apiKey && !initialFlow?.id && (
+                <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 mb-4 text-left">
+                  <div className="bg-gray-900 rounded-lg px-4 py-2.5 mb-2">
+                    <pre className="text-emerald-400 text-xs font-mono overflow-x-auto">{`FlowLift.init("${apiKey}");`}</pre>
+                  </div>
+                  <p className="text-xs text-blue-700">
+                    Make sure the snippet is installed →{" "}
+                    <a href="/settings" className="font-semibold underline underline-offset-2 hover:text-blue-900">
+                      Settings
+                    </a>
+                  </p>
                 </div>
-                <p className="text-xs text-gray-400 mb-6">Make sure this is installed in your app</p>
-              </>
-            )}
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => { router.push("/flows"); router.refresh(); }}
-                className="px-4 py-2 text-sm border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
-              >
-                Back to flows
-              </button>
-              <button
-                onClick={() => router.push("/flows/new")}
-                className="px-4 py-2 text-sm bg-[#4f6ef7] text-white rounded-lg hover:bg-[#3b5af5] transition-colors"
-              >
-                Create another
-              </button>
+              )}
+
+              {/* Action buttons */}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => { router.push("/flows"); router.refresh(); }}
+                  className="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 transition-colors font-medium"
+                >
+                  ← Back to flows
+                </button>
+                <button
+                  onClick={() => router.push("/flows/new")}
+                  className="flex-1 px-4 py-2.5 text-sm bg-[#4f6ef7] text-white rounded-xl hover:bg-[#3b5af5] transition-colors font-semibold shadow-sm"
+                >
+                  Create another →
+                </button>
+              </div>
+
+              {/* Countdown */}
+              <p className="text-xs text-gray-300 mt-4 tabular-nums">
+                Redirecting in {countdown}…
+              </p>
             </div>
-            <p className="text-xs text-gray-300 mt-4">Redirecting in 5 seconds…</p>
           </div>
         </div>
       )}
