@@ -80,7 +80,7 @@ function Hero() {
         {/* Badge */}
         <div className="inline-flex items-center gap-2 bg-blue-50 text-[#4f6ef7] text-xs font-semibold px-3 py-1.5 rounded-full mb-7">
           <span className="w-1.5 h-1.5 rounded-full bg-[#4f6ef7] animate-pulse" />
-          No-code onboarding flows — cheaper than Appcues
+          In-app onboarding without the developer
         </div>
 
         {/* Headline */}
