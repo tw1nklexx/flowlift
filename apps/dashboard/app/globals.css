@@ -2,6 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Hero mockup animations ─────────────────────────────────────────────── */
+
+@keyframes nudge-modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+@keyframes nudge-modal-out {
+  from { opacity: 1; transform: translateY(0);   }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+@keyframes nudge-tooltip-in {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes nudge-pulse-glow {
+  0%,  100% { opacity: 0.4; }
+  50%        { opacity: 0.75; }
+}
+
+@keyframes nudge-shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%);  }
+}
+
 @layer base {
   * {
     box-sizing: border-box;

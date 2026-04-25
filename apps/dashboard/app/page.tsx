@@ -20,6 +20,7 @@ import {
   Users,
 } from "lucide-react";
 import SharedPublicLayout from "@/components/SharedPublicLayout";
+import { AnimatedHeroMockup } from "@/components/AnimatedHeroMockup";
 import PricingSection from "./PricingSection";
 
 export default function LandingPage() {
@@ -53,11 +54,10 @@ function Hero() {
 
           {/* ── Left: text ── */}
           <div className="text-center lg:text-left pt-16 lg:pt-0">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-brand-50 text-[#4f6ef7] text-xs font-semibold px-3.5 py-1.5 rounded-full mb-6 border border-brand-100">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4f6ef7] animate-pulse" />
-              In-app onboarding without the developer
-            </div>
+            {/* Label */}
+            <p className="text-sm font-semibold uppercase tracking-widest text-blue-600 mb-4">
+              For SaaS founders
+            </p>
 
             {/* Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#111827] leading-[1.05] tracking-tight mb-4">
@@ -108,72 +108,8 @@ function Hero() {
             </div>
           </div>
 
-          {/* ── Right: browser mockup ── */}
-          <div className="relative">
-            {/* Glow */}
-            <div className="absolute -inset-8 bg-gradient-to-r from-brand-300/25 via-purple-300/15 to-brand-300/25 rounded-[40px] blur-2xl" />
-
-            <div className="relative bg-[#0f0f13] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-white/5">
-              {/* Title bar */}
-              <div className="flex items-center gap-1.5 px-4 py-3 bg-gray-900/80 border-b border-white/5">
-                <span className="w-3 h-3 rounded-full bg-red-400/70" />
-                <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
-                <span className="w-3 h-3 rounded-full bg-green-400/70" />
-                <div className="flex-1 flex justify-center">
-                  <span className="text-xs text-gray-500 font-mono bg-white/5 px-4 py-0.5 rounded-md">
-                    app.yourproduct.com
-                  </span>
-                </div>
-              </div>
-
-              {/* App skeleton + Nudgify modal */}
-              <div className="p-5 text-left">
-                <div className="flex gap-4">
-                  {/* Fake sidebar */}
-                  <div className="w-24 shrink-0 space-y-2 pt-1">
-                    <div className="h-3 w-18 bg-white/10 rounded" />
-                    <div className="h-2.5 w-14 bg-white/6 rounded" />
-                    <div className="h-2.5 w-16 bg-white/6 rounded" />
-                    <div className="h-2.5 w-12 bg-white/6 rounded" />
-                    <div className="mt-3 h-2.5 w-18 bg-brand-600/25 rounded" />
-                    <div className="h-2.5 w-14 bg-white/6 rounded" />
-                  </div>
-                  {/* Fake main */}
-                  <div className="flex-1 space-y-3">
-                    <div className="grid grid-cols-3 gap-2">
-                      <div className="h-12 bg-white/5 rounded-lg border border-white/5" />
-                      <div className="h-12 bg-white/5 rounded-lg border border-white/5" />
-                      <div className="h-12 bg-white/5 rounded-lg border border-white/5" />
-                    </div>
-                    <div className="h-2 w-3/4 bg-white/6 rounded" />
-                    <div className="h-2 w-1/2 bg-white/6 rounded" />
-                  </div>
-                </div>
-
-                {/* Nudgify welcome modal */}
-                <div className="mt-4 relative">
-                  <div className="absolute inset-0 bg-black/30 rounded-xl" />
-                  <div className="relative mx-auto max-w-xs bg-white rounded-2xl p-5 shadow-2xl">
-                    <div className="flex items-start gap-3 mb-3">
-                      <span className="shrink-0 w-8 h-8 rounded-xl bg-brand-50 flex items-center justify-center">
-                        <Sparkles size={14} className="text-[#4f6ef7]" />
-                      </span>
-                      <div>
-                        <p className="text-xs font-bold text-gray-900 leading-snug">Welcome to your dashboard! 👋</p>
-                        <p className="text-[11px] text-gray-400 mt-0.5">Let us show you around in 2 minutes.</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] font-semibold bg-[#4f6ef7] text-white px-3 py-1.5 rounded-full">
-                        Show me →
-                      </span>
-                      <span className="text-[11px] text-gray-400">Skip for now</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* ── Right: animated mockup ── */}
+          <AnimatedHeroMockup />
 
         </div>
       </div>
