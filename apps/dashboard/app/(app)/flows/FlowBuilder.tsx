@@ -353,9 +353,9 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
                   }`}
                 >
                   {label}
-                  {tab === "targeting" && targeting.conditions.length > 0 && (
+                  {tab === "targeting" && (targeting.conditions.length > 0 || targeting.idle_seconds != null) && (
                     <span className="ml-1 bg-brand-100 text-brand-600 text-xs px-1.5 py-0.5 rounded-full">
-                      {targeting.conditions.length}
+                      {targeting.conditions.length + (targeting.idle_seconds != null ? 1 : 0)}
                     </span>
                   )}
                 </button>
@@ -389,6 +389,9 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
                 onAddCondition={addCondition}
                 onUpdateCondition={updateCondition}
                 onRemoveCondition={removeCondition}
+                onIdleChange={(seconds) =>
+                  setTargeting({ ...targeting, idle_seconds: seconds ?? undefined })
+                }
               />
             )}
           </div>
@@ -804,13 +807,17 @@ function TargetingPanel({
   onAddCondition,
   onUpdateCondition,
   onRemoveCondition,
+  onIdleChange,
 }: {
   rules: TargetingRules;
   onOperatorChange: (op: "AND" | "OR") => void;
   onAddCondition: () => void;
   onUpdateCondition: (idx: number, patch: Partial<Condition>) => void;
   onRemoveCondition: (idx: number) => void;
+  onIdleChange: (seconds: number | null) => void;
 }) {
+  const idleEnabled = rules.idle_seconds != null;
+
   return (
     <div>
       <p className="text-xs text-gray-500 mb-3">
@@ -835,14 +842,22 @@ function TargetingPanel({
         </div>
       )}
 
-      <div className="space-y-3">
+      <div>
         {rules.conditions.map((cond, idx) => (
-          <ConditionRow
-            key={idx}
-            condition={cond}
-            onChange={(patch) => onUpdateCondition(idx, patch)}
-            onRemove={() => onRemoveCondition(idx)}
-          />
+          <div key={idx}>
+            <ConditionRow
+              condition={cond}
+              onChange={(patch) => onUpdateCondition(idx, patch)}
+              onRemove={() => onRemoveCondition(idx)}
+            />
+            {idx < rules.conditions.length - 1 && (
+              <div className="flex items-center justify-center my-2">
+                <span className="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full font-medium">
+                  {rules.operator}
+                </span>
+              </div>
+            )}
+          </div>
         ))}
       </div>
 
@@ -852,6 +867,51 @@ function TargetingPanel({
       >
         + Add condition
       </button>
+
+      {/* Idle Trigger */}
+      <div className="mt-6 pt-5 border-t border-gray-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-medium text-gray-700">Idle trigger</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">Show when user stops interacting</p>
+          </div>
+          <button
+            role="switch"
+            aria-checked={idleEnabled}
+            onClick={() => onIdleChange(idleEnabled ? null : 10)}
+            className={`relative w-9 h-5 rounded-full transition-colors shrink-0 ${
+              idleEnabled ? "bg-brand-600" : "bg-gray-200"
+            }`}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                idleEnabled ? "translate-x-4" : ""
+              }`}
+            />
+          </button>
+        </div>
+
+        {idleEnabled && (
+          <div className="mt-3">
+            <label className="block text-xs text-gray-500 mb-1.5">Trigger after</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={1}
+                max={300}
+                value={rules.idle_seconds ?? 10}
+                onChange={(e) => {
+                  const v = Math.max(1, Math.min(300, Number(e.target.value) || 10));
+                  onIdleChange(v);
+                }}
+                className="w-20 text-xs border border-gray-200 rounded-md px-2 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              />
+              <span className="text-xs text-gray-500">seconds of inactivity</span>
+            </div>
+            <p className="text-[11px] text-gray-400 mt-1">1 sec – 5 min</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -876,7 +936,6 @@ function ConditionRow({
           <option value="url_contains">URL contains</option>
           <option value="user_plan">User plan</option>
           <option value="session_count">Session count</option>
-          <option value="idle_seconds">User is idle</option>
         </select>
         <button onClick={onRemove} className="text-gray-300 hover:text-red-400 text-xs">✕</button>
       </div>
@@ -893,40 +952,26 @@ function ConditionRow({
         </select>
       )}
 
-      {condition.type === "idle_seconds" ? (
-        <div className="space-y-1">
-          <label className="text-[11px] text-gray-400">seconds of inactivity</label>
-          <input
-            value={String(condition.value || 10)}
-            onChange={(e) => onChange({ value: Math.max(1, Math.min(60, Number(e.target.value) || 10)) })}
-            type="number"
-            min={1}
-            max={60}
-            className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
-          />
-        </div>
-      ) : (
-        <input
-          value={String(condition.value)}
-          onChange={(e) =>
-            onChange({
-              value:
-                condition.type === "session_count"
-                  ? Number(e.target.value) || 0
-                  : e.target.value,
-            })
-          }
-          type={condition.type === "session_count" ? "number" : "text"}
-          placeholder={
-            condition.type === "url_contains"
-              ? "/dashboard"
-              : condition.type === "user_plan"
-              ? "free"
-              : "3"
-          }
-          className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
-        />
-      )}
+      <input
+        value={String(condition.value)}
+        onChange={(e) =>
+          onChange({
+            value:
+              condition.type === "session_count"
+                ? Number(e.target.value) || 0
+                : e.target.value,
+          })
+        }
+        type={condition.type === "session_count" ? "number" : "text"}
+        placeholder={
+          condition.type === "url_contains"
+            ? "/dashboard"
+            : condition.type === "user_plan"
+            ? "free"
+            : "3"
+        }
+        className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
+      />
     </div>
   );
 }

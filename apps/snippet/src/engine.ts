@@ -1,5 +1,5 @@
 export interface Condition {
-  type: "user_plan" | "url_contains" | "session_count" | "idle_seconds";
+  type: "user_plan" | "url_contains" | "session_count";
   value: string | number;
   operator?: "eq" | "lte" | "gte";
 }
@@ -17,6 +17,7 @@ function idleSeconds(): number {
 export interface TargetingRules {
   operator: "AND" | "OR";
   conditions: Condition[];
+  idle_seconds?: number;
 }
 
 export interface UserProps {
@@ -44,15 +45,17 @@ function evalCondition(cond: Condition, user: UserProps): boolean {
       return count === target;
     }
 
-    case "idle_seconds":
-      return idleSeconds() >= Number(cond.value);
-
     default:
       return false;
   }
 }
 
 export function matchesRules(rules: TargetingRules, user: UserProps): boolean {
+  // Idle trigger: if set, user must have been inactive long enough
+  if (rules.idle_seconds != null && idleSeconds() < rules.idle_seconds) {
+    return false;
+  }
+
   if (rules.conditions.length === 0) return true;
 
   if (rules.operator === "AND") {

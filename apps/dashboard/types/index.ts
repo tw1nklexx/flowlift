@@ -29,7 +29,7 @@ export interface Step {
   position?: "top" | "bottom";
 }
 
-export type ConditionType = "user_plan" | "url_contains" | "session_count" | "idle_seconds";
+export type ConditionType = "user_plan" | "url_contains" | "session_count";
 export type ConditionOperator = "eq" | "lte" | "gte";
 
 export interface Condition {
@@ -41,6 +41,7 @@ export interface Condition {
 export interface TargetingRules {
   operator: "AND" | "OR";
   conditions: Condition[];
+  idle_seconds?: number;
 }
 
 export interface Flow {
