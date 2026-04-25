@@ -13,6 +13,8 @@ import {
   LayoutDashboard,
   Users,
   ArrowRight,
+  Check,
+  X,
 } from "lucide-react";
 import PricingSection from "./PricingSection";
 
@@ -24,6 +26,7 @@ export default function LandingPage() {
       <SocialProof />
       <BeforeAfter />
       <HowItWorks />
+      <ComparisonTable />
       <PricingSection />
       <FinalCta />
       <Footer />
@@ -323,6 +326,101 @@ function HowItWorks() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Comparison Table ────────────────────────────────────────────────────── */
+
+function ComparisonTable() {
+  const cols = ["Nudgify", "Appcues", "Pendo", "DIY"];
+
+  const rows: { feature: string; values: (string | boolean)[] }[] = [
+    { feature: "Setup time",           values: ["10 minutes", "2–3 days",  "1 week",   "3–4 weeks"] },
+    { feature: "Price",                values: ["$29/mo",     "$300/mo",   "$700/mo",  "$5,000+"]   },
+    { feature: "No developer needed",  values: [true,          false,       false,       false]       },
+    { feature: "AI flow generator",    values: [true,          false,       false,       false]       },
+    { feature: "Visual preview",       values: [true,          true,        true,        false]       },
+    { feature: "Works without cookies",values: [true,          false,       false,       false]       },
+  ];
+
+  return (
+    <section className="py-24 px-6 bg-gray-50">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Why founders choose Nudgify
+          </h2>
+          <p className="text-lg text-gray-500 max-w-lg mx-auto">
+            Same category. A fraction of the price.
+          </p>
+        </div>
+
+        <div className="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+          <table className="w-full min-w-[560px] border-collapse bg-white">
+            <thead>
+              <tr>
+                <th className="px-5 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider w-[190px] border-b border-gray-100">
+                  Feature
+                </th>
+                {cols.map((col, i) => (
+                  <th
+                    key={col}
+                    className={`px-5 py-4 text-sm font-bold text-center border-b ${
+                      i === 0
+                        ? "bg-[#4f6ef7] text-white border-[#3b5af5]"
+                        : "text-gray-700 border-gray-100"
+                    }`}
+                  >
+                    {col}
+                    {i === 0 && (
+                      <span className="ml-1.5 text-[10px] font-semibold bg-white/20 text-white px-1.5 py-0.5 rounded-full">
+                        you
+                      </span>
+                    )}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, ri) => (
+                <tr
+                  key={row.feature}
+                  className={ri % 2 === 0 ? "bg-white" : "bg-gray-50/60"}
+                >
+                  <td className="px-5 py-3.5 text-sm font-medium text-gray-700 border-b border-gray-50">
+                    {row.feature}
+                  </td>
+                  {row.values.map((val, vi) => (
+                    <td
+                      key={vi}
+                      className={`px-5 py-3.5 text-sm text-center border-b border-gray-50 ${
+                        vi === 0
+                          ? "bg-blue-50 font-semibold text-[#4f6ef7]"
+                          : "text-gray-500"
+                      }`}
+                    >
+                      {typeof val === "boolean" ? (
+                        val ? (
+                          <Check size={16} className="mx-auto text-emerald-500" strokeWidth={2.5} />
+                        ) : (
+                          <X size={16} className="mx-auto text-red-300" strokeWidth={2.5} />
+                        )
+                      ) : (
+                        val
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="text-xs text-gray-400 mt-3 text-center">
+          Prices based on publicly available information. Competitor prices may vary.
+        </p>
       </div>
     </section>
   );

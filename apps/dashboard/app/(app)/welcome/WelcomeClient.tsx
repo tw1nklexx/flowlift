@@ -48,16 +48,18 @@ export default function WelcomeClient({ apiKey }: Props) {
     setTimeout(() => setCopied(null), 2000);
   }
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nudgify.app";
+
   const simpleCode =
     `<!-- Add before closing </body> tag in your HTML -->\n` +
-    `<script src="https://your-domain.com/snippet" async></script>\n` +
+    `<script src="${appUrl}/snippet" async></script>\n` +
     `<script>\n` +
     `  Nudgify.init("${apiKey}"); // ← copied from your Settings page\n` +
     `</script>`;
 
   const advancedCode =
     `<!-- Add before closing </body> tag -->\n` +
-    `<script src="https://your-domain.com/snippet" async></script>\n` +
+    `<script src="${appUrl}/snippet" async></script>\n` +
     `<script>\n` +
     `  Nudgify.init("${apiKey}");\n` +
     `\n` +
@@ -101,7 +103,7 @@ export default function WelcomeClient({ apiKey }: Props) {
       </div>
 
       {/* Page */}
-      <div className="min-h-full px-6 py-8">
+      <div className="min-h-full px-6 py-8 pb-24">
         <div className="max-w-[560px] mx-auto">
 
           {/* Top nav */}

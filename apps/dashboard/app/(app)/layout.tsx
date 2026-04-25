@@ -10,7 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <Sidebar email={user.email ?? ""} logoutButton={<LogoutButton />} />
+      <Sidebar logoutButton={<LogoutButton />} />
       <main className="flex-1 overflow-auto">{children}</main>
     </div>
   );

@@ -11,16 +11,18 @@ export default function InstallTabs({ apiKey }: Props) {
   const [tab, setTab] = useState<"simple" | "advanced">("simple");
   const [copied, setCopied] = useState(false);
 
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://nudgify.app";
+
   const simpleCode =
     `<!-- Add before closing </body> tag in your HTML -->\n` +
-    `<script src="https://your-domain.com/snippet" async></script>\n` +
+    `<script src="${appUrl}/snippet" async></script>\n` +
     `<script>\n` +
-    `  Nudgify.init("${apiKey}"); // ← copied from your Settings page\n` +
+    `  Nudgify.init("${apiKey}"); // ← your project key\n` +
     `</script>`;
 
   const advancedCode =
     `<!-- Add before closing </body> tag -->\n` +
-    `<script src="https://your-domain.com/snippet" async></script>\n` +
+    `<script src="${appUrl}/snippet" async></script>\n` +
     `<script>\n` +
     `  Nudgify.init("${apiKey}");\n` +
     `\n` +

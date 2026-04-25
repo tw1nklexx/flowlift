@@ -1,9 +1,11 @@
 import Link from "next/link";
 import CopyButton from "./CopyButton";
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://nudgify.app";
+
 const INSTALL_CODE =
   `<!-- Add before closing </body> tag in your HTML -->\n` +
-  `<script src="https://your-domain.com/snippet" async></script>\n` +
+  `<script src="${APP_URL}/snippet" async></script>\n` +
   `<script>\n` +
   `  Nudgify.init("proj_xxxxxxxxxxxx"); // ← copied from your Settings page\n` +
   `</script>`;
@@ -94,10 +96,10 @@ export default function DocsPage() {
                 It&apos;s pre-filled there — just copy and paste.
               </p>
               <p className="text-sm text-gray-500 mb-4">
-                Replace <Mono>your-domain.com</Mono> with your app&apos;s domain once you&apos;ve set
-                up a custom domain, or use the Nudgify CDN URL from your{" "}
+                The snippet URL is automatically set to your Nudgify deployment. Copy the
+                pre-filled snippet from your{" "}
                 <Link href="/settings" className="text-[#4f6ef7] hover:underline">Settings page</Link>{" "}
-                during development.
+                to get your exact URL.
               </p>
               <Tip className="mb-8">
                 Works immediately, no configuration needed. Nudgify will show a demo flow
