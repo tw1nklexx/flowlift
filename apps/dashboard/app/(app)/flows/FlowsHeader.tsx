@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, HelpCircle } from "lucide-react";
 import AIGeneratorModal from "@/components/AIGeneratorModal";
+import { FlowsPageTour } from "@/components/FlowsPageTour";
 
 interface Props {
   projectId: string;
@@ -11,6 +12,7 @@ interface Props {
 
 export default function FlowsHeader({ projectId }: Props) {
   const [showAI, setShowAI] = useState(false);
+  const [showTour, setShowTour] = useState(false);
 
   return (
     <>
@@ -22,6 +24,14 @@ export default function FlowsHeader({ projectId }: Props) {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowTour(true)}
+            className="p-2 text-gray-400 hover:text-gray-600 rounded-lg border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer"
+            title="How flows work"
+            aria-label="How flows work"
+          >
+            <HelpCircle size={15} />
+          </button>
           <Link
             href="/flows/new"
             className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
@@ -29,6 +39,7 @@ export default function FlowsHeader({ projectId }: Props) {
             + New Flow
           </Link>
           <button
+            data-tour="ai-btn"
             onClick={() => setShowAI(true)}
             className="inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
           >
@@ -40,6 +51,7 @@ export default function FlowsHeader({ projectId }: Props) {
       {showAI && (
         <AIGeneratorModal projectId={projectId} onClose={() => setShowAI(false)} />
       )}
+      {showTour && <FlowsPageTour onClose={() => setShowTour(false)} />}
     </>
   );
 }

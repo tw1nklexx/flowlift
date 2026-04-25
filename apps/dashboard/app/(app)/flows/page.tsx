@@ -87,7 +87,7 @@ export default async function FlowsPage() {
       )}
 
       {/* Templates */}
-      <section className="mb-10">
+      <section data-tour="templates" className="mb-10">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
           Start from a template
         </h2>
@@ -125,7 +125,7 @@ export default async function FlowsPage() {
       </section>
 
       {/* My Flows */}
-      <section>
+      <section data-tour="flows-list">
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
           My flows
         </h2>

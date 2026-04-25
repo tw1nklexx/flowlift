@@ -10,15 +10,17 @@ interface NavItemProps {
   label: string;
   icon: React.ReactNode;
   badge?: React.ReactNode;
+  "data-tour"?: string;
 }
 
-function NavItem({ href, label, icon, badge }: NavItemProps) {
+function NavItem({ href, label, icon, badge, "data-tour": dataTour }: NavItemProps) {
   const pathname = usePathname();
   const isActive = pathname === href || pathname.startsWith(href + "/");
 
   return (
     <Link
       href={href}
+      data-tour={dataTour}
       className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${
         isActive
           ? "bg-brand-50 text-brand-700"
@@ -82,7 +84,7 @@ export default function Sidebar({ logoutButton }: SidebarProps) {
       <nav className="flex-1 px-3 py-4 space-y-0.5" aria-label="Main navigation">
         <GettingStartedNavItem />
         <NavItem href="/flows" label="Flows" icon={<Zap size={16} />} />
-        <NavItem href="/stats" label="Stats" icon={<BarChart2 size={16} />} />
+        <NavItem href="/stats" label="Stats" icon={<BarChart2 size={16} />} data-tour="stats-link" />
         <NavItem href="/settings" label="Settings" icon={<Settings size={16} />} />
       </nav>
       <div className="px-3 py-4 border-t border-gray-200 space-y-1">
