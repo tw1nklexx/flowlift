@@ -56,12 +56,12 @@ function Nav() {
           >
             Docs
           </Link>
-          <Link
+          <a
             href="/login"
-            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors px-3 py-1.5"
+            className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 hover:border-gray-300 px-3 py-1.5 rounded-lg cursor-pointer"
           >
             Sign in
-          </Link>
+          </a>
           <Link
             href="/signup"
             className="text-sm font-semibold bg-[#4f6ef7] text-white px-4 py-1.5 rounded-lg hover:bg-[#3b5af5] transition-colors"
