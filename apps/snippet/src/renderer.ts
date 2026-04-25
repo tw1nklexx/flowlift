@@ -214,10 +214,14 @@ function renderModal(
   }
 
   if (!_hideWatermark) {
-    box.style.position = "relative";
-    const wm = document.createElement("span");
-    wm.textContent = "⚡ Powered by FlowLift";
-    wm.style.cssText = "position:absolute;bottom:10px;right:14px;font-size:10px;color:rgba(0,0,0,0.35);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;pointer-events:none;";
+    const wm = document.createElement("a");
+    wm.href = "https://flowlift.io";
+    wm.target = "_blank";
+    wm.rel = "noopener noreferrer";
+    wm.textContent = "✨ Add onboarding like this →";
+    wm.style.cssText = "position:absolute;bottom:10px;right:14px;font-size:12px;color:rgba(107,114,128,0.9);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-decoration:none;cursor:pointer;";
+    wm.addEventListener("mouseenter", () => { wm.style.textDecoration = "underline"; wm.style.color = "rgba(107,114,128,1)"; });
+    wm.addEventListener("mouseleave", () => { wm.style.textDecoration = "none"; wm.style.color = "rgba(107,114,128,0.9)"; });
     box.appendChild(wm);
   }
 
@@ -253,10 +257,16 @@ function renderBanner(step: Step, onNext: () => void, onDismiss: () => void): vo
   banner.appendChild(btn);
 
   if (!_hideWatermark) {
-    const wmColor = isColorDark(bgColor) ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.35)";
-    const wm = document.createElement("span");
-    wm.textContent = "| ⚡ Powered by FlowLift";
-    wm.style.cssText = `font-size:10px;color:${wmColor};margin-left:12px;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;flex-shrink:0;`;
+    const wmColor = isColorDark(bgColor) ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.5)";
+    const wmHover = isColorDark(bgColor) ? "rgba(255,255,255,1)" : "rgba(0,0,0,0.7)";
+    const wm = document.createElement("a");
+    wm.href = "https://flowlift.io";
+    wm.target = "_blank";
+    wm.rel = "noopener noreferrer";
+    wm.textContent = "✨ Add onboarding like this →";
+    wm.style.cssText = `font-size:12px;color:${wmColor};margin-left:12px;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;flex-shrink:0;text-decoration:none;cursor:pointer;`;
+    wm.addEventListener("mouseenter", () => { wm.style.textDecoration = "underline"; wm.style.color = wmHover; });
+    wm.addEventListener("mouseleave", () => { wm.style.textDecoration = "none"; wm.style.color = wmColor; });
     banner.appendChild(wm);
   }
 
@@ -297,9 +307,14 @@ function renderTooltip(step: Step, onNext: () => void, onDismiss: () => void): v
   tooltip.appendChild(btn);
 
   if (!_hideWatermark) {
-    const wm = document.createElement("span");
-    wm.textContent = "⚡ Powered by FlowLift";
-    wm.style.cssText = "display:block;font-size:10px;color:rgba(255,255,255,0.6);margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;";
+    const wm = document.createElement("a");
+    wm.href = "https://flowlift.io";
+    wm.target = "_blank";
+    wm.rel = "noopener noreferrer";
+    wm.textContent = "✨ Add onboarding like this →";
+    wm.style.cssText = "display:block;font-size:12px;color:rgba(255,255,255,0.75);margin-top:10px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-decoration:none;cursor:pointer;";
+    wm.addEventListener("mouseenter", () => { wm.style.textDecoration = "underline"; wm.style.color = "rgba(255,255,255,1)"; });
+    wm.addEventListener("mouseleave", () => { wm.style.textDecoration = "none"; wm.style.color = "rgba(255,255,255,0.75)"; });
     tooltip.appendChild(wm);
   }
 

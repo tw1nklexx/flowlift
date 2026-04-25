@@ -326,9 +326,16 @@ function ModalStep({ step, onNext, onDismiss }: StepRenderProps) {
         >
           {step.cta_label}
         </button>
-        <span style={{ position: "absolute", bottom: 10, right: 14, fontSize: 10, color: "rgba(0,0,0,0.35)", fontFamily: WM_FONT, pointerEvents: "none" }}>
-          ⚡ Powered by FlowLift
-        </span>
+        <a
+          href="https://flowlift.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ position: "absolute", bottom: 10, right: 14, fontSize: 12, color: "rgba(107,114,128,0.9)", fontFamily: WM_FONT, textDecoration: "none", cursor: "pointer" }}
+          onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; e.currentTarget.style.color = "rgba(107,114,128,1)"; }}
+          onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; e.currentTarget.style.color = "rgba(107,114,128,0.9)"; }}
+        >
+          ✨ Add onboarding like this →
+        </a>
       </div>
     </div>
   );
@@ -363,9 +370,16 @@ function BannerStep({ step, onNext, onDismiss }: StepRenderProps) {
       >
         {step.cta_label}
       </button>
-      <span style={{ fontSize: 10, color: isColorDark(bgColor) ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.35)", marginLeft: 12, whiteSpace: "nowrap", fontFamily: WM_FONT, flexShrink: 0 }}>
-        | ⚡ Powered by FlowLift
-      </span>
+      <a
+        href="https://flowlift.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ fontSize: 12, color: isColorDark(bgColor) ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.5)", marginLeft: 12, whiteSpace: "nowrap", fontFamily: WM_FONT, flexShrink: 0, textDecoration: "none", cursor: "pointer" }}
+        onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; }}
+        onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; }}
+      >
+        ✨ Add onboarding like this →
+      </a>
       <button
         onClick={onDismiss}
         style={{
@@ -416,9 +430,16 @@ function TooltipStep({ step, onNext }: { step: Step; onNext: () => void }) {
       >
         {step.cta_label}
       </button>
-      <span style={{ display: "block", fontSize: 10, color: "rgba(255,255,255,0.6)", marginTop: 10, fontFamily: WM_FONT }}>
-        ⚡ Powered by FlowLift
-      </span>
+      <a
+        href="https://flowlift.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ display: "block", fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 10, fontFamily: WM_FONT, textDecoration: "none", cursor: "pointer" }}
+        onMouseEnter={e => { e.currentTarget.style.textDecoration = "underline"; e.currentTarget.style.color = "rgba(255,255,255,1)"; }}
+        onMouseLeave={e => { e.currentTarget.style.textDecoration = "none"; e.currentTarget.style.color = "rgba(255,255,255,0.75)"; }}
+      >
+        ✨ Add onboarding like this →
+      </a>
       {/* arrow */}
       <div
         style={{
