@@ -54,32 +54,32 @@ function Hero() {
           {/* ── Left: text ── */}
           <div className="text-center lg:text-left pt-16 lg:pt-0">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-brand-50 text-[#4f6ef7] text-xs font-semibold px-3.5 py-1.5 rounded-full mb-8 border border-brand-100">
+            <div className="inline-flex items-center gap-2 bg-brand-50 text-[#4f6ef7] text-xs font-semibold px-3.5 py-1.5 rounded-full mb-6 border border-brand-100">
               <span className="w-1.5 h-1.5 rounded-full bg-[#4f6ef7] animate-pulse" />
               In-app onboarding without the developer
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#111827] leading-[1.05] tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#111827] leading-[1.05] tracking-tight mb-4">
               Turn signups into<br />
               <span className="text-[#4f6ef7]">activated customers</span>
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg text-gray-500 mb-4 leading-relaxed">
+            <p className="text-lg text-gray-500 mb-3 leading-relaxed">
               Add personalized onboarding flows to your SaaS in 10 minutes.
               No developer changes after the initial setup.
             </p>
 
             {/* Power line */}
-            <p className="text-sm text-gray-400 mb-10">
+            <p className="text-sm text-gray-400 mb-8">
               Users who complete onboarding are{" "}
               <strong className="text-[#4f6ef7] font-semibold">2–3× more likely</strong>{" "}
               to become paying customers.
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-3 mb-5">
+            <div className="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-3 mb-4">
               <Link
                 href="/signup"
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#4f6ef7] text-white px-8 py-3.5 rounded-full text-sm font-semibold hover:bg-[#3b5af5] hover:scale-105 transition-all shadow-lg shadow-blue-200 cursor-pointer"
@@ -501,8 +501,8 @@ function ComparisonSection() {
               }`}
             >
               {t.highlight && (
-                <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200 mb-1">
-                  ← that&apos;s us
+                <span className="text-[10px] font-bold uppercase tracking-widest bg-white/20 text-white px-2 py-0.5 rounded-full mb-1">
+                  Most popular
                 </span>
               )}
               <p className={`text-lg font-bold mb-2 ${t.highlight ? "text-white" : "text-gray-900"}`}>

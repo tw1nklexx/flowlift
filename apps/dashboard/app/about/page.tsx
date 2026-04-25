@@ -12,7 +12,7 @@ export default function AboutPage() {
       <div className="max-w-2xl mx-auto px-6 pt-28 pb-24">
         {/* Header */}
         <div className="mb-12">
-          <span className="block text-xs font-bold uppercase tracking-widest text-[#4f6ef7] mb-3">
+          <span className="block text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">
             Our story
           </span>
           <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-4">About Nudgify</h1>

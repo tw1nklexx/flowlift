@@ -29,10 +29,7 @@ export default function SnippetReferencePage() {
       <div className="max-w-3xl mx-auto px-6 pt-28 pb-24">
         {/* Page header */}
         <div className="mb-12">
-          <Link href="/docs" className="text-sm text-[#4f6ef7] hover:underline mb-4 inline-block">
-            ← Back to docs
-          </Link>
-          <span className="block text-xs font-bold uppercase tracking-widest text-[#4f6ef7] mb-3">
+          <span className="block text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">
             Reference
           </span>
           <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-3">Snippet Reference</h1>

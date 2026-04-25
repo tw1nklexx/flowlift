@@ -11,8 +11,8 @@ export default function BlogPage() {
       <div className="max-w-3xl mx-auto px-6 pt-28 pb-24">
         {/* Header */}
         <div className="mb-14">
-          <span className="block text-xs font-bold uppercase tracking-widest text-[#4f6ef7] mb-3">
-            Writing
+          <span className="block text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">
+            Blog
           </span>
           <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-3">Blog</h1>
           <p className="text-lg text-gray-500">

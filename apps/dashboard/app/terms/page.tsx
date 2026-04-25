@@ -10,6 +10,9 @@ export default function TermsPage() {
     <SharedPublicLayout>
       <div className="max-w-2xl mx-auto px-6 pt-28 pb-24">
         <div className="mb-10">
+          <span className="block text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">
+            Legal
+          </span>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Terms of Service</h1>
           <p className="text-sm text-gray-400">Last updated: April 2026</p>
         </div>
