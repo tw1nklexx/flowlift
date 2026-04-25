@@ -82,6 +82,7 @@ export default function Sidebar({ email, logoutButton }: SidebarProps) {
       </div>
       <nav className="flex-1 px-3 py-4 space-y-0.5" aria-label="Main navigation">
         <GettingStartedNavItem />
+        <NavItem href="/profile" label="Profile" icon={<User size={16} />} />
         <NavItem href="/flows" label="Flows" icon={<Zap size={16} />} />
         <NavItem href="/stats" label="Stats" icon={<BarChart2 size={16} />} />
         <NavItem href="/settings" label="Settings" icon={<Settings size={16} />} />
