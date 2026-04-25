@@ -43,32 +43,32 @@ function Nav() {
         <Link href="/" className="text-xl font-bold text-[#4f6ef7]">
           Nudgify
         </Link>
-        <nav className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <Link
             href="/#pricing"
-            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-1.5 hidden sm:block cursor-pointer"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer px-2 py-2 hidden sm:block"
           >
             Pricing
           </Link>
           <Link
             href="/docs"
-            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors px-3 py-1.5 hidden sm:block cursor-pointer"
+            className="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors cursor-pointer px-2 py-2 hidden sm:block"
           >
             Docs
           </Link>
           <Link
             href="/login"
-            className="text-gray-600 hover:text-gray-900 font-medium transition-colors cursor-pointer px-3 py-1.5 text-sm"
+            className="text-gray-600 hover:text-gray-900 font-medium transition-colors cursor-pointer px-2 py-2 text-sm"
           >
             Sign in
           </Link>
           <Link
             href="/signup"
-            className="text-sm font-semibold bg-[#4f6ef7] text-white px-4 py-1.5 rounded-lg hover:bg-[#3b5af5] transition-colors cursor-pointer"
+            className="text-sm font-semibold bg-[#4f6ef7] text-white px-4 py-2 rounded-lg hover:bg-[#3b5af5] transition-colors cursor-pointer ml-1"
           >
             Start free
           </Link>
-        </nav>
+        </div>
       </div>
     </header>
   );
