@@ -14,6 +14,6 @@
     font-family: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
   }
   ::selection {
-    @apply bg-brand-100 text-brand-800;
+    @apply bg-brand-100 text-brand-700;
   }
 }
