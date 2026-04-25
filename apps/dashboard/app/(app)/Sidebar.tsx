@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Zap, BarChart2, Settings, Rocket, UserCircle } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -79,7 +80,10 @@ export default function Sidebar({ logoutButton }: SidebarProps) {
   return (
     <aside className="w-56 bg-white border-r border-gray-200 flex flex-col shrink-0">
       <div className="px-5 py-5 border-b border-gray-200">
-        <span className="text-lg font-bold text-brand-600">Nudgify</span>
+        <Link href="/" className="flex items-center gap-2">
+          <Image src="/nudgify-logo.svg" alt="Nudgify" width={20} height={20} />
+          <span className="text-lg font-bold text-brand-600">Nudgify</span>
+        </Link>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-0.5" aria-label="Main navigation">
         <GettingStartedNavItem />

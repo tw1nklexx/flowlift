@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import {
   ArrowRight,
@@ -50,8 +51,9 @@ function Nav() {
     <header className="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-[#4f6ef7] shrink-0">
-          Nudgify
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <Image src="/nudgify-logo.svg" alt="Nudgify" width={24} height={24} priority />
+          <span className="text-xl font-bold text-[#4f6ef7]">Nudgify</span>
         </Link>
 
         {/* Desktop nav */}
@@ -753,8 +755,9 @@ function Footer() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="text-xl font-bold text-white block mb-3">
-              Nudgify
+            <Link href="/" className="flex items-center gap-2 mb-3">
+              <Image src="/nudgify-logo.svg" alt="" width={20} height={20} />
+              <span className="text-xl font-bold text-white">Nudgify</span>
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed">
               Lightweight onboarding for SaaS founders who move fast.
