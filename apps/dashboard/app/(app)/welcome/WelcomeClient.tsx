@@ -103,7 +103,7 @@ export default function WelcomeClient({ apiKey }: Props) {
       </div>
 
       {/* Page */}
-      <div className="min-h-full px-6 py-8 pb-24">
+      <div className="min-h-full px-6 py-8 pb-32">
         <div className="max-w-[560px] mx-auto">
 
           {/* Top nav */}
@@ -248,10 +248,10 @@ export default function WelcomeClient({ apiKey }: Props) {
             {/* ── Success state ── */}
             <div
               style={{
-                maxHeight: step2Done ? "220px" : "0",
+                maxHeight: step2Done ? "360px" : "0",
                 opacity: step2Done ? 1 : 0,
                 overflow: "hidden",
-                transition: "max-height 450ms ease 200ms, opacity 400ms ease 380ms",
+                transition: "max-height 500ms ease 200ms, opacity 400ms ease 380ms",
               }}
             >
               <div className="mt-4 text-center bg-gradient-to-br from-blue-50 to-indigo-50 border border-indigo-100 rounded-2xl py-10 px-6">

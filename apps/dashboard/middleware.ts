@@ -25,15 +25,23 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const { data } = await supabase.auth.getUser();
+    user = data.user;
+  } catch {
+    // If Supabase is unreachable, let the request through — page-level guards handle auth
+    return supabaseResponse;
+  }
 
   const { pathname } = request.nextUrl;
   const isProtected =
     pathname.startsWith("/flows") ||
     pathname.startsWith("/analytics") ||
-    pathname.startsWith("/settings");
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/stats") ||
+    pathname.startsWith("/welcome") ||
+    pathname.startsWith("/profile");
 
   if (!user && isProtected) {
     const url = request.nextUrl.clone();
