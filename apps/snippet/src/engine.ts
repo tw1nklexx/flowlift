@@ -2,6 +2,7 @@ export interface Condition {
   type: "user_plan" | "url_contains" | "session_count";
   value: string | number;
   operator?: "eq" | "lte" | "gte";
+  join_next?: "AND" | "OR";
 }
 
 let _lastActivity = Date.now();
@@ -15,7 +16,7 @@ function idleSeconds(): number {
 }
 
 export interface TargetingRules {
-  operator: "AND" | "OR";
+  operator?: "AND" | "OR"; // legacy, kept for backward compat
   conditions: Condition[];
   idle_seconds?: number;
 }
@@ -58,8 +59,12 @@ export function matchesRules(rules: TargetingRules, user: UserProps): boolean {
 
   if (rules.conditions.length === 0) return true;
 
-  if (rules.operator === "AND") {
-    return rules.conditions.every((c) => evalCondition(c, user));
+  // Evaluate left-to-right using each condition's join_next operator
+  let result = evalCondition(rules.conditions[0], user);
+  for (let i = 1; i < rules.conditions.length; i++) {
+    const op = rules.conditions[i - 1].join_next ?? "AND";
+    const next = evalCondition(rules.conditions[i], user);
+    result = op === "AND" ? result && next : result || next;
   }
-  return rules.conditions.some((c) => evalCondition(c, user));
+  return result;
 }

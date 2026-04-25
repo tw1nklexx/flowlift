@@ -42,7 +42,7 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
   const [steps, setSteps] = useState<Step[]>(initialFlow?.steps ?? []);
   const [selectedIdx, setSelectedIdx] = useState<number | null>(steps.length > 0 ? 0 : null);
   const [targeting, setTargeting] = useState<TargetingRules>(
-    initialFlow?.targeting_rules ?? { operator: "AND", conditions: [] },
+    initialFlow?.targeting_rules ?? { conditions: [] },
   );
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -385,7 +385,6 @@ export default function FlowBuilder({ projectId, initialFlow, apiKey }: Props) {
             ) : (
               <TargetingPanel
                 rules={targeting}
-                onOperatorChange={(op) => setTargeting({ ...targeting, operator: op })}
                 onAddCondition={addCondition}
                 onUpdateCondition={updateCondition}
                 onRemoveCondition={removeCondition}
@@ -803,14 +802,12 @@ function DesignPanel({
 
 function TargetingPanel({
   rules,
-  onOperatorChange,
   onAddCondition,
   onUpdateCondition,
   onRemoveCondition,
   onIdleChange,
 }: {
   rules: TargetingRules;
-  onOperatorChange: (op: "AND" | "OR") => void;
   onAddCondition: () => void;
   onUpdateCondition: (idx: number, patch: Partial<Condition>) => void;
   onRemoveCondition: (idx: number) => void;
@@ -824,24 +821,6 @@ function TargetingPanel({
         Show this flow only when these conditions match.
       </p>
 
-      {rules.conditions.length > 1 && (
-        <div className="flex gap-2 mb-4">
-          {(["AND", "OR"] as const).map((op) => (
-            <button
-              key={op}
-              onClick={() => onOperatorChange(op)}
-              className={`flex-1 py-1.5 text-xs rounded-lg border font-medium transition-colors ${
-                rules.operator === op
-                  ? "bg-brand-50 border-brand-400 text-brand-700"
-                  : "border-gray-200 text-gray-400 hover:border-gray-300"
-              }`}
-            >
-              {op}
-            </button>
-          ))}
-        </div>
-      )}
-
       <div>
         {rules.conditions.map((cond, idx) => (
           <div key={idx}>
@@ -852,9 +831,21 @@ function TargetingPanel({
             />
             {idx < rules.conditions.length - 1 && (
               <div className="flex items-center justify-center my-2">
-                <span className="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full font-medium">
-                  {rules.operator}
-                </span>
+                <button
+                  onClick={() =>
+                    onUpdateCondition(idx, {
+                      join_next: (cond.join_next ?? "AND") === "AND" ? "OR" : "AND",
+                    })
+                  }
+                  title="Click to toggle AND / OR"
+                  className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full transition-colors ${
+                    (cond.join_next ?? "AND") === "AND"
+                      ? "bg-brand-100 text-brand-700 hover:bg-brand-200"
+                      : "bg-orange-100 text-orange-700 hover:bg-orange-200"
+                  }`}
+                >
+                  {cond.join_next ?? "AND"}
+                </button>
               </div>
             )}
           </div>

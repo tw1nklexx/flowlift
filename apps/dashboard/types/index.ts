@@ -36,10 +36,11 @@ export interface Condition {
   type: ConditionType;
   value: string | number;
   operator?: ConditionOperator;
+  join_next?: "AND" | "OR"; // how this condition joins with the next one
 }
 
 export interface TargetingRules {
-  operator: "AND" | "OR";
+  operator?: "AND" | "OR"; // legacy field, kept for backward compat
   conditions: Condition[];
   idle_seconds?: number;
 }
