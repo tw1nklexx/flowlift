@@ -22,18 +22,18 @@ export default function FlowsHeader({ projectId }: Props) {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowAI(true)}
-            className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <Sparkles size={14} className="mr-1.5" aria-hidden="true" />Generate with AI
-          </button>
           <Link
             href="/flows/new"
             className="bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-brand-700 transition-colors"
           >
             + New Flow
           </Link>
+          <button
+            onClick={() => setShowAI(true)}
+            className="inline-flex items-center gap-1.5 bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <Sparkles size={14} aria-hidden="true" />Generate with AI
+          </button>
         </div>
       </div>
 
