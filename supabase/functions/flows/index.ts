@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     // Resolve project by api_key
     const { data: project, error: projErr } = await supabase
       .from("projects")
-      .select("id")
+      .select("id, plan")
       .eq("api_key", apiKey)
       .single();
 
@@ -72,8 +72,9 @@ Deno.serve(async (req) => {
     // Return the demo flow when the project has no published flows yet —
     // gives new users an instant "it works" moment after pasting the snippet.
     const result = flows && flows.length > 0 ? flows : [DEMO_FLOW];
+    const hideWatermark = project.plan !== "free";
 
-    return new Response(JSON.stringify({ flows: result }), {
+    return new Response(JSON.stringify({ flows: result, hideWatermark }), {
       status: 200,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

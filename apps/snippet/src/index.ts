@@ -56,7 +56,11 @@ async function fetchAndRun(userProps: UserProps): Promise<void> {
   try {
     const res = await fetch(`${_apiUrl}/flows?api_key=${_apiKey}`);
     if (!res.ok) return;
-    ({ flows } = await res.json());
+    const payload = await res.json();
+    flows = payload.flows;
+    if (payload.hideWatermark === true) {
+      _hideWatermark = true;
+    }
   } catch {
     return;
   }

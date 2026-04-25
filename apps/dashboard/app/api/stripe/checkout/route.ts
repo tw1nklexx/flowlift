@@ -1,43 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
 
-const PRICE_MAP: Record<string, string> = {
-  starter: process.env.STRIPE_PRICE_STARTER ?? "",
-  pro: process.env.STRIPE_PRICE_PRO ?? "",
-};
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export async function POST(req: NextRequest) {
-  try {
-    const { planId } = await req.json();
-    const priceId = PRICE_MAP[planId];
+export async function POST(req: Request) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (!priceId) {
-      return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
-    }
+  const { priceId } = await req.json();
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "sk_test_placeholder");
+  const { data: project } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("user_id", user.id)
+    .single();
 
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    payment_method_types: ["card"],
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?upgraded=true`,
+    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings`,
+    customer_email: user.email,
+    metadata: {
+      user_id: user.id,
+      project_id: project?.id ?? "",
+    },
+  });
 
-    const origin = req.headers.get("origin") ?? "http://localhost:3000";
-
-    const session = await stripe.checkout.sessions.create({
-      mode: "subscription",
-      customer_email: user.email,
-      line_items: [{ price: priceId, quantity: 1 }],
-      success_url: `${origin}/settings?upgraded=1`,
-      cancel_url: `${origin}/settings`,
-      metadata: { user_id: user.id, plan: planId },
-    });
-
-    return NextResponse.json({ url: session.url });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Stripe error" }, { status: 500 });
-  }
+  return NextResponse.json({ url: session.url });
 }

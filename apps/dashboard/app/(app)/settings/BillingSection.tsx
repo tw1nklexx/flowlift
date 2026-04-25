@@ -1,41 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { UpgradeButton } from "./UpgradeButton";
 
 const PLANS = [
   {
     id: "starter",
     name: "Starter",
     price: "$29/mo",
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER ?? "",
     features: ["Unlimited flows", "10K MAU", "Analytics"],
   },
   {
     id: "pro",
     name: "Pro",
     price: "$79/mo",
+    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO ?? "",
     features: ["Everything in Starter", "50K MAU", "Priority support"],
   },
 ];
 
 export default function BillingSection({ plan }: { plan: string }) {
-  const [loading, setLoading] = useState<string | null>(null);
-
-  async function checkout(planId: string) {
-    setLoading(planId);
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ planId }),
-    });
-    const { url, error } = await res.json();
-    if (error) {
-      alert(error);
-      setLoading(null);
-      return;
-    }
-    window.location.href = url;
-  }
-
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
@@ -58,13 +42,13 @@ export default function BillingSection({ plan }: { plan: string }) {
                 </li>
               ))}
             </ul>
-            <button
-              onClick={() => checkout(p.id)}
-              disabled={!!loading || plan === p.id}
-              className="w-full py-2 text-xs font-medium rounded-lg border border-brand-400 text-brand-600 hover:bg-brand-50 disabled:opacity-50 transition-colors"
-            >
-              {plan === p.id ? "Current plan" : loading === p.id ? "Redirecting…" : `Upgrade to ${p.name}`}
-            </button>
+            {plan === p.id ? (
+              <div className="w-full py-2 px-4 rounded-lg bg-gray-100 text-gray-500 text-sm text-center">
+                Current plan
+              </div>
+            ) : (
+              <UpgradeButton priceId={p.priceId} label={`Upgrade to ${p.name}`} />
+            )}
           </div>
         ))}
       </div>

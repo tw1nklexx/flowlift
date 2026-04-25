@@ -1,9 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/types";
 import { Sparkles } from "lucide-react";
+import { Suspense } from "react";
 import ApiKeyDisplay from "./ApiKeyDisplay";
 import BillingSection from "./BillingSection";
 import InstallTabs from "./InstallTabs";
+import { UpgradeBanner } from "./UpgradeBanner";
 
 export default async function SettingsPage() {
   const supabase = createClient();
@@ -17,6 +19,9 @@ export default async function SettingsPage() {
 
   return (
     <div className="p-8 max-w-2xl">
+      <Suspense fallback={null}>
+        <UpgradeBanner />
+      </Suspense>
       <h1 className="text-2xl font-bold text-gray-900 mb-8">Settings</h1>
 
       <section className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
