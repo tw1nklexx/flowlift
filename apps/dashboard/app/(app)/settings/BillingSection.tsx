@@ -2,24 +2,31 @@
 
 import { UpgradeButton } from "./UpgradeButton";
 
-const PLANS = [
+const PLAN_META = [
   {
     id: "starter",
     name: "Starter",
     price: "$29/mo",
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_STARTER ?? "",
     features: ["Unlimited flows", "10K MAU", "Analytics"],
   },
   {
     id: "pro",
     name: "Pro",
     price: "$79/mo",
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO ?? "",
     features: ["Everything in Starter", "50K MAU", "Priority support"],
   },
 ];
 
-export default function BillingSection({ plan }: { plan: string }) {
+export default function BillingSection({
+  plan,
+  starterPriceId,
+  proPriceId,
+}: {
+  plan: string;
+  starterPriceId: string;
+  proPriceId: string;
+}) {
+  const priceIds: Record<string, string> = { starter: starterPriceId, pro: proPriceId };
   return (
     <div>
       <div className="flex items-center gap-2 mb-4">
@@ -29,7 +36,7 @@ export default function BillingSection({ plan }: { plan: string }) {
         </span>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        {PLANS.map((p) => (
+        {PLAN_META.map((p) => (
           <div key={p.id} className="border border-gray-200 rounded-xl p-4">
             <div className="flex items-baseline justify-between mb-3">
               <span className="font-semibold text-gray-900">{p.name}</span>
@@ -47,7 +54,7 @@ export default function BillingSection({ plan }: { plan: string }) {
                 Current plan
               </div>
             ) : (
-              <UpgradeButton priceId={p.priceId} label={`Upgrade to ${p.name}`} />
+              <UpgradeButton priceId={priceIds[p.id]} label={`Upgrade to ${p.name}`} />
             )}
           </div>
         ))}

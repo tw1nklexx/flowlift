@@ -13,6 +13,10 @@ export async function POST(req: Request) {
 
   const { priceId } = await req.json();
 
+  if (!priceId) {
+    return NextResponse.json({ error: "priceId is required" }, { status: 400 });
+  }
+
   const { data: project } = await supabase
     .from("projects")
     .select("*")

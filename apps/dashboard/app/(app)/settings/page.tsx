@@ -48,7 +48,11 @@ export default async function SettingsPage() {
 
       <section className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
         <h2 className="text-base font-semibold text-gray-900 mb-1">Billing</h2>
-        <BillingSection plan={project?.plan ?? "free"} />
+        <BillingSection
+          plan={project?.plan ?? "free"}
+          starterPriceId={process.env.STRIPE_PRICE_STARTER ?? ""}
+          proPriceId={process.env.STRIPE_PRICE_PRO ?? ""}
+        />
       </section>
 
       {(project?.plan ?? "free") === "free" && (
