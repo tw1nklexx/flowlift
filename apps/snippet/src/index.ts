@@ -1,4 +1,4 @@
-import { matchesRules, type UserProps } from "./engine";
+import { matchesRules, trackActivity, type UserProps } from "./engine";
 import { initTracker, track } from "./tracker";
 import { renderStep, cleanup } from "./renderer";
 
@@ -103,6 +103,11 @@ export function init(apiKey: string, options: InitOptions = {}): void {
   _sessionId = getSessionId();
   initTracker(apiKey, _apiUrl);
 
+  // Track user activity for idle_seconds targeting
+  (["mousemove", "click", "keypress", "scroll", "touchstart"] as const).forEach((evt) =>
+    document.addEventListener(evt, trackActivity, { passive: true })
+  );
+
   const visitCount = getAndIncrementVisitCount();
 
   // Build anonymous profile — used when identify() hasn't been called yet
@@ -118,6 +123,15 @@ export function init(apiKey: string, options: InitOptions = {}): void {
     : anonProfile;
 
   fetchAndRun(profile);
+
+  // Poll every 5 seconds to catch idle_seconds triggers
+  setInterval(() => {
+    const visitCount = parseInt(localStorage.getItem("fl_visit_count") ?? "1", 10);
+    const profile: UserProps = _userProps
+      ? { session_count: visitCount, ..._userProps }
+      : { id: `anon_${_sessionId}`, plan: "free", session_count: visitCount };
+    fetchAndRun(profile);
+  }, 5000);
 }
 
 export function identify(userProps: UserProps): void {

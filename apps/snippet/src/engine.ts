@@ -1,7 +1,17 @@
 export interface Condition {
-  type: "user_plan" | "url_contains" | "session_count";
+  type: "user_plan" | "url_contains" | "session_count" | "idle_seconds";
   value: string | number;
   operator?: "eq" | "lte" | "gte";
+}
+
+let _lastActivity = Date.now();
+
+export function trackActivity(): void {
+  _lastActivity = Date.now();
+}
+
+function idleSeconds(): number {
+  return (Date.now() - _lastActivity) / 1000;
 }
 
 export interface TargetingRules {
@@ -33,6 +43,9 @@ function evalCondition(cond: Condition, user: UserProps): boolean {
       if (op === "gte") return count >= target;
       return count === target;
     }
+
+    case "idle_seconds":
+      return idleSeconds() >= Number(cond.value);
 
     default:
       return false;

@@ -18,7 +18,7 @@ export default function FlowsHeader({ projectId }: Props) {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Flows</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Build guided experiences for your users
+            Increase activation and reduce day-1 churn
           </p>
         </div>
         <div className="flex items-center gap-2">

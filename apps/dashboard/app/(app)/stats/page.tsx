@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { PartyPopper, Lightbulb, TrendingDown } from "lucide-react";
+import { FixWithAIButton } from "./FixWithAIButton";
 
 const BENCHMARK = 38; // industry avg completion rate %
 
@@ -170,9 +171,9 @@ export default async function StatsPage() {
                   style={{ left: `${BENCHMARK}%` }}
                 />
               </div>
-              <p className="text-[11px] text-gray-400 mb-1.5">Industry avg: {BENCHMARK}%</p>
+              <p className="text-[11px] text-gray-400 mb-1.5">Typical SaaS onboarding: 30–40%</p>
               {aboveBenchmark ? (
-                <span className="text-[11px] font-semibold text-green-600">Above average ↑</span>
+                <span className="text-[11px] font-semibold text-green-600">Above average ✓</span>
               ) : (
                 <span className="text-[11px] font-semibold text-amber-500">Room to improve →</span>
               )}
@@ -379,14 +380,17 @@ export default async function StatsPage() {
 
                   {/* Insight */}
                   {worst.drop > 0 && (
-                    <div className="flex items-start gap-2.5 bg-orange-50 border border-orange-100 rounded-xl px-4 py-3">
-                      <TrendingDown size={15} className="text-orange-500 shrink-0 mt-0.5" />
-                      <p className="text-sm text-orange-800">
-                        <span className="font-semibold">
-                          Most users drop at {worst.label}
-                        </span>{" "}
-                        — {worst.drop}% don&apos;t make it past this step. Consider shortening or simplifying it.
-                      </p>
+                    <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3">
+                      <div className="flex items-start gap-2.5">
+                        <TrendingDown size={15} className="text-orange-500 shrink-0 mt-0.5" />
+                        <p className="text-sm text-orange-800">
+                          <span className="font-semibold">
+                            Most users drop at {worst.label}
+                          </span>{" "}
+                          — {worst.drop}% don&apos;t make it past this step. Consider shortening or simplifying it.
+                        </p>
+                      </div>
+                      <FixWithAIButton flowId={flow.id} stepIndex={flow.biggestDropIdx} />
                     </div>
                   )}
                 </div>

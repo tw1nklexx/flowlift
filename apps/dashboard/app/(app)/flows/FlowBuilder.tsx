@@ -876,6 +876,7 @@ function ConditionRow({
           <option value="url_contains">URL contains</option>
           <option value="user_plan">User plan</option>
           <option value="session_count">Session count</option>
+          <option value="idle_seconds">User is idle</option>
         </select>
         <button onClick={onRemove} className="text-gray-300 hover:text-red-400 text-xs">✕</button>
       </div>
@@ -892,26 +893,40 @@ function ConditionRow({
         </select>
       )}
 
-      <input
-        value={String(condition.value)}
-        onChange={(e) =>
-          onChange({
-            value:
-              condition.type === "session_count"
-                ? Number(e.target.value) || 0
-                : e.target.value,
-          })
-        }
-        type={condition.type === "session_count" ? "number" : "text"}
-        placeholder={
-          condition.type === "url_contains"
-            ? "/dashboard"
-            : condition.type === "user_plan"
-            ? "free"
-            : "3"
-        }
-        className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
-      />
+      {condition.type === "idle_seconds" ? (
+        <div className="space-y-1">
+          <label className="text-[11px] text-gray-400">seconds of inactivity</label>
+          <input
+            value={String(condition.value || 10)}
+            onChange={(e) => onChange({ value: Math.max(1, Math.min(60, Number(e.target.value) || 10)) })}
+            type="number"
+            min={1}
+            max={60}
+            className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
+          />
+        </div>
+      ) : (
+        <input
+          value={String(condition.value)}
+          onChange={(e) =>
+            onChange({
+              value:
+                condition.type === "session_count"
+                  ? Number(e.target.value) || 0
+                  : e.target.value,
+            })
+          }
+          type={condition.type === "session_count" ? "number" : "text"}
+          placeholder={
+            condition.type === "url_contains"
+              ? "/dashboard"
+              : condition.type === "user_plan"
+              ? "free"
+              : "3"
+          }
+          className="w-full text-xs border border-gray-200 rounded-md px-2 py-1 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-brand-500"
+        />
+      )}
     </div>
   );
 }

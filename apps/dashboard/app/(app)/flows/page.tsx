@@ -57,7 +57,7 @@ export default async function FlowsPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Flows</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Build guided experiences for your users
+              Increase activation and reduce day-1 churn
             </p>
           </div>
           <Link
@@ -76,8 +76,11 @@ export default async function FlowsPage() {
             <Zap size={28} className="text-white" />
           </div>
           <h2 className="text-xl font-bold mb-2">Create your first onboarding flow</h2>
-          <p className="text-sm text-blue-100 leading-relaxed max-w-sm mx-auto mb-5">
+          <p className="text-sm text-blue-100 leading-relaxed max-w-sm mx-auto mb-2">
             Pick a template below and launch in 2 minutes. Your users will see it the moment they visit your app.
+          </p>
+          <p className="text-xs text-blue-200/80 max-w-xs mx-auto mb-5">
+            Users who complete onboarding are 2–3× more likely to become paying customers.
           </p>
           <ChevronDown size={24} className="animate-bounce inline-block text-white/80" aria-hidden="true" />
         </div>
