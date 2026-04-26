@@ -46,6 +46,12 @@ export function AnimatedHeroMockup() {
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const rippleCounter = useRef(0);
 
+  // ACT 1 — problem
+  const [act1WanderDone, setAct1WanderDone] = useState(false); // wander → intent cursor
+  const [act1AtButton,   setAct1AtButton]   = useState(false); // intent cursor slides to button
+  const [act1BtnHover,   setAct1BtnHover]   = useState(false);
+  const [act1BtnPressed, setAct1BtnPressed] = useState(false);
+
   // ACT 2 — builder
   const [typed,        setTyped]        = useState("");
   const [buildCursor,  setBuildCursor]  = useState<BuildCursor>("hidden");
@@ -90,6 +96,8 @@ export function AnimatedHeroMockup() {
 
     // ─── Hard reset all state ───────────────────────────────────────
     setPhase("problem"); setAddr(ADDR.problem); setVis(true);
+    setAct1WanderDone(false); setAct1AtButton(false);
+    setAct1BtnHover(false); setAct1BtnPressed(false);
     setTyped(""); setBuildCursor("hidden"); setPublishState("idle");
     setLiveCursor("hidden"); setBtnState("idle"); setModalOut(false);
     setShowTip3(false); setNavHighlight(false); setShowSuccess3(false);
@@ -111,6 +119,20 @@ export function AnimatedHeroMockup() {
     add(() => setVis(false),              10700);
     add(() => setCycle((c) => c + 1),    11000);
 
+    // ─── ACT 1: Problem — click "+ New project" ────────────────────
+    // wander animation is 1.3s; after it ends, intent cursor appears at same spot
+    add(() => setAct1WanderDone(true), 1300);
+    // 50ms later: begin sliding to button (gives React time to mount element first)
+    add(() => setAct1AtButton(true),   1350);
+    // hover on button
+    add(() => setAct1BtnHover(true),   1650);
+    // click + ripple at center of "+ New project" button
+    add(() => {
+      setAct1BtnPressed(true);
+      addRipple(328, 232); // centered in main area, ~232px from top
+    }, 1800);
+    add(() => setAct1BtnPressed(false), 1950);
+
     // ─── ACT 2: Builder interactions ───────────────────────────────
     // cursor appears at title field
     add(() => setBuildCursor("title"),  2200);
@@ -131,7 +153,7 @@ export function AnimatedHeroMockup() {
     // pressed state + ripple
     add(() => {
       setPublishState("pressed");
-      addRipple(453, 17); // Publish button: far right of builder top bar
+      addRipple(482, 17); // Publish button: far right of builder top bar
     }, 4000);
     // button flashes green
     add(() => setPublishState("published"), 4180);
@@ -146,7 +168,7 @@ export function AnimatedHeroMockup() {
     // click — pressed + ripple
     add(() => {
       setBtnState("pressed");
-      addRipple(192, 197); // "Show me →" button inside centered modal
+      addRipple(215, 214); // "Show me →" button inside centered modal
     }, 6150);
     // modal fades out, reset button state
     add(() => { setModalOut(true); setBtnState("idle"); }, 6280);
@@ -193,12 +215,12 @@ export function AnimatedHeroMockup() {
   // Cursor transform for ACT 2 (relative to content area top-left)
   const build2XY =
     buildCursor === "title"   ? "translate(148px, 135px)" :
-    buildCursor === "publish" ? "translate(420px, 8px)"   :
+    buildCursor === "publish" ? "translate(460px, 10px)"  :  // on Publish button
                                 "translate(160px, 80px)";
 
   // Cursor transform for ACT 3
   const live3XY =
-    liveCursor === "button" ? "translate(170px, 185px)" :
+    liveCursor === "button" ? "translate(204px, 210px)" :  // on "Show me →"
     liveCursor === "nav"    ? "translate(40px,  76px)"  :
                               "translate(160px, 160px)";
 
@@ -314,17 +336,41 @@ export function AnimatedHeroMockup() {
                 <p className="text-[11px] text-gray-600 text-center leading-relaxed" style={{ maxWidth: 160 }}>
                   Create your first project to get started with onboarding flows
                 </p>
-                <div className="mt-1 rounded-lg bg-white/[0.05] border border-white/[0.07] px-3 py-1.5">
+                <div
+                  className={`mt-1 rounded-lg px-3 py-1.5 border transition-all duration-100 ${
+                    act1BtnPressed
+                      ? "bg-white/[0.14] border-white/[0.18] scale-95"
+                      : act1BtnHover
+                      ? "bg-white/[0.09] border-white/[0.13]"
+                      : "bg-white/[0.05] border-white/[0.07]"
+                  }`}
+                >
                   <span className="text-[11px] text-gray-500">+ New project</span>
                 </div>
               </div>
-              {/* Wandering cursor */}
-              <div
-                className="absolute z-50"
-                style={{ bottom: 90, left: 170, animation: "cursor-wander 2s ease-in-out forwards" }}
-              >
-                <FakeCursor />
-              </div>
+
+              {/* Wander cursor — plays for first 1.3s */}
+              {!act1WanderDone && (
+                <div
+                  className="absolute z-50"
+                  style={{ bottom: 90, left: 170, animation: "cursor-wander 1.3s ease-in-out forwards" }}
+                >
+                  <FakeCursor />
+                </div>
+              )}
+              {/* Intent cursor — appears at wander-end position, slides to button */}
+              {act1WanderDone && (
+                <div
+                  className="absolute z-50 top-0 left-0"
+                  style={{
+                    transform: act1AtButton ? "translate(322px, 222px)" : "translate(170px, 216px)",
+                    transition: act1AtButton ? "transform 0.45s cubic-bezier(0.34, 1.2, 0.64, 1)" : "none",
+                  }}
+                >
+                  <FakeCursor />
+                </div>
+              )}
+
               <p className="absolute bottom-3 left-3 text-[10px] italic text-gray-600">User signs up...</p>
             </div>
           )}
